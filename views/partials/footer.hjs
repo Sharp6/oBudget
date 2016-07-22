@@ -1,0 +1,13 @@
+<p>
+Hotkeys: 
+<ul>
+	<li>Ctrl + alt + n: Volgende verrichting</li>
+	<li>Ctrl + alt + p: Vorige verrichting</li>
+	<li>Ctrl + alt + s: Bewaar verrichting</li>
+</ul>
+</p>
+
+<p>
+Hotkeys werken niet als de typeahead box geselecteerd is.
+</p>
+	

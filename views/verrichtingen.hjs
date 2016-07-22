@@ -1,0 +1,152 @@
+<html>
+	<head>
+		<script src="/libraries/require.min.js" data-main="/javascripts/verrichtingenMain.js"></script>
+		
+		<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+
+	</head>
+
+	<body>
+		{{>header}}
+		<div class="container">
+			<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filterDiv">Filters</button>
+			<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#verrichtingenDiv">Verrichtingen</button>
+
+
+			<div id="filterDiv" class="collapse">
+				<form>
+					<div class="form-group">
+						<label for="beginDatum">Begindatum</label>
+						<input type="text" class="form-control" id="beginDatum" placeHolder="dd/mm/yyyy" data-bind="value: beginDatum" />
+					</div>
+
+					<div class="form-group">
+						<label for="eindDatum">Einddatum</label>
+						<input type="text" class="form-control" id="eindDatum" placeHolder="dd/mm/yyyy" data-bind="value:eindDatum" />
+					</div>
+
+					<div class="form-group">
+						<label for="bankSelect">Bank</label>
+						<select id="bankSelect" class="form-control" data-bind="options:banken, optionsCaption: 'Selecteer een bank', value: bankFilter">
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="statusSelect">Status</label>
+						<select id="statusSelect" class="form-control" data-bind="options:statuses, optionsCaption: 'Selecteer een status', value: statusFilter">
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="categorieSelect">Categorie</label>
+						<select id="categorieSelect" class="form-control" data-bind="options:categorieen, optionsCaption: 'Selecteer een categorie', value: categorieFilter">
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="limitFilter">Verrichtingen per pagina:</label>
+						<input type="text" class="form-control" id="limitFilter" placeHolder="aantal verrichtingen" data-bind="value:limitFilter" />
+					</div>
+
+					<div class="form-group">
+						<label for="skipFilter">Begin verrichting:</label>
+						<input type="text" class="form-control" id="skipFilter" placeHolder="aantal verrichtingen skippen" data-bind="value:skipFilter" />
+					</div>
+
+					<div class="form-group">
+						<label>Classificatie door business rule: <input type="checkbox" id="businessRuleClassificationFilter" data-bind="checked:businessRuleClassificationFilter" /></label>
+					</div>
+
+					<button type="button" class="btn btn-default" data-bind="click:filterVerrichtingen">Filter</button>	
+				</form>
+
+				<p>Er zijn <span data-bind="text:numberOfVerrichtingen"></span> verrichtingen voor deze filter-criteria.</p>
+			</div>
+
+			<div id="verrichtingenDiv" class="collapse">
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Datum</th>
+							<th>Bedrag</th>
+							<th>Bank</th>
+							<th>Status</th>
+							<th>Categorie</th>
+							<th>Classifier-categorie</th>
+							<th>Selecter</th>
+						</tr>
+					</thead>
+
+					<tbody data-bind="foreach:verrichtingen">
+						<tr>
+							<td>
+								<span data-bind="text:datum"></span>
+							</td>	
+							<td>
+								<span data-bind="text:bedrag"></span>
+							</td>
+							<td>
+								<span data-bind="text:bank"></span>
+							</td>
+							<td>
+								<span data-bind="text:status"></span>
+							</td>
+							<td>
+								<span data-bind="text:categorie"></span>
+							</td>
+							<td>
+								<span data-bind="text:categorieGuessedByMachine"></span>
+							</td>
+							<td>
+								<button type="button" class="btn btn-default" data-bind="click:$parent.selectedVerrichting">Detail</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- Geselecteerde verrichting //-->
+			<div class="well" data-bind="with:selectedVerrichting, visible:selectedVerrichting">
+				<h1>
+					<span data-bind="text:bank"></span> 
+					<span data-bind="text:bedrag"></span>
+					<span class="badge" data-bind="text:status"></span>
+				</h1>
+				
+				<ul>
+					<li><span data-bind="text:datum"></span></li>
+					<li><span data-bind="text:info"></span></li>
+					<li data-bind="visible:categorieGuessedByBusinessRule">Business rule classification: <span data-bind="text:categorieGuessedByBusinessRule"></span><button class="btn btn-default" data-bind="click:accepteerCategorieGuessedByBusinessRule">Take this</button></li>
+					<li data-bind="visible:categorieGuessedByMachine">Machine classification: <span data-bind="text:categorieGuessedByMachine"></span><button class="btn btn-default" data-bind="click:accepteerCategorieGuessedByMachine">Take this</button></li>
+				</ul>
+
+				<form data-bind="visible:saveEnabled">
+					<div class="form-group">
+						<label for="verrichtingCategorie">Categorie</label>
+						<select id="verrichtingCategorie" class="form-control" data-bind="options:$parent.categorieen, optionsCaption: 'Selecteer een categorie', value: categorie">
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="verrichtingCategorieText">Categorie</label>
+						<input type="text" id="verrichtingCategorieText" class="form-control" 
+						data-bind="typeahead: $parent.categorieen, value: categorie">
+					</div>
+					
+				</form>
+				
+				<button type="button" class="btn btn-primary" data-bind="click:save">Save</button>
+				<!-- prev/next nav //-->		
+				<div class="btn-group pull-right">
+					<button type="button" class="btn btn-default" data-bind="click:$parent.decreaseSelectedVerrichting">Previous</button>
+					<button type="button" class="btn btn-default" data-bind="click:$parent.increaseSelectedVerrichting">Next</button>
+				</div>
+			</div>
+
+
+		</div>
+		{{>footer}}
+	</body>
+</html>

@@ -1,0 +1,10 @@
+data.rekeningOpvrager = data.Rekeningnummer;
+				data.rubrieknaam = data.Rubrieknaam;
+				data.naamOpvrager = data.Naam;
+				data.valuta = data.Munt;
+				data.afschriftnummer = data.Afschriftnummer;
+				data.datumVerrichting = data.Datum;
+				data.info = data.Omschrijving;
+				data.datumOpdracht = data.Valuta;
+				data.bedrag = data.Bedrag;
+				data.saldo = data.Saldo;

@@ -6,6 +6,7 @@ var verrichtingRepo = function() {
 	function create(data) {
 		data.verrichtingId = uuid.v1();
 		data.status = 'imported';
+		// add timestamp?
 		
 		return new Verrichting(data);
 	}
@@ -20,7 +21,6 @@ var verrichtingRepo = function() {
 	}
 
 	function save(verrichting) {
-		console.log("REPO: SAVING");
 		return verrichtingDA.save(verrichting);
 	}
 

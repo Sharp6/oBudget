@@ -24,7 +24,6 @@ var VerrichtingDA = function() {
 				if(err) {
 					reject(err);
 				} else {
-					console.log("DA:", doc);
 					resolve(doc);
 				}
 			});
@@ -37,7 +36,6 @@ var VerrichtingDA = function() {
 				if(err) {
 					return reject(err);
 				}
-				console.log("DA: DELETED");
 				return resolve(result);
 			});
 		});
@@ -54,7 +52,6 @@ var VerrichtingDA = function() {
 					console.log("VERRICHTINGDA: DOC FOUND, AN UPDATE SHOULD HAPPEN");
 					resolve();
 				} else {
-					console.log("DA: I'M SAVING");
 					var verrichtingModel = new VerrichtingModel({
 						verrichtingId: verrichting.verrichtingId,
 						bankRef: verrichting.bankRef,
@@ -74,7 +71,6 @@ var VerrichtingDA = function() {
 						if (err) {
 							reject(err);
 						} else {
-							console.log("DA: I'M DONE SAVING");
 							resolve();
 						}
 					});

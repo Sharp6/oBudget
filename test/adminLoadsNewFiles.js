@@ -3,6 +3,8 @@ chai.use(require('chai-as-promised'));
 chai.use(require('sinon-chai'));
 var sinon = require("sinon");
 
+var fs = require('fs');
+
 var filesCollector = require('../filesCollector');
 
 // outside in
@@ -20,28 +22,34 @@ describe("Files are loaded", function() {
 	});
 });
 
+
+
 // inside out
 describe("Workflow for one new file", function() {
 	// for a workflow, it should be tested that all actions are called once.
 
-	// Below are the tests for the individual actions. These should probably be separated.	
+	// Below are the tests for the individual actions. These should probably be separated.
+
+	// I think the solution loading can happen in a beforeEach.
+
+	function loadSolution(filename) {
+		return JSON.parse(fs.readFileSync(filename).toString());
+	}
+
 	describe("Identifies the bank correctly", function() {
 		var determineBank = require("../fileHandler/bankDeterminer.action");
 
 		function expectIdentifiedBank(example) {
-			it("identifies a " + example.bank + " file", function() {
-				return expect(determineBank({filename:example.filename})).to.eventually.have.property('bank').that.is.equal(example.bank);
+			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
+			it("identifies the bank for file " + example.filename + ".", function() {
+				//return expect().to.eventually.have.property('bank').that.is.equal(example.bank);
+				var data = determineBank({filename:'../testDataFiles/' + example.filename});
+				return expect(data).to.eventually.contain.property('bank').that.is.deep.equal(solution.bank);
 			});
 		}
 
 		[
-			{ bank: "belfius", filename: "belfius.csv"},
-			{ bank: "belfius", filename: "dfdfdfbelfiusdfdf.csv"},
-			{ bank: "belfius", filename: "belfius 12.csv"},
-			{ bank: "argenta", filename: "argenta.csv"},
-			{ bank: "argenta", filename: "Argenta.csv"},
-			{ bank: "argenta", filename: " argenta.csv"},
-			{ bank: "kbc", filename: "kbc 89.csv"}
+			{ filename: "argenta.csv"}
 		].forEach(expectIdentifiedBank);
 	});
 
@@ -69,133 +77,111 @@ describe("Workflow for one new file", function() {
 		var readFile = require("../fileHandler/fileReader.action");
 
 		function testFileReading(example) {
+			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
+
 			it("should populate the rawData attribute for file " + example.filename, function() {
-				return expect(readFile({filename: './testDataFiles/'+example.filename})).to.eventually.have.property('rawData').that.is.not.empty;
+				var data = readFile({filename: './testDataFiles/'+example.filename});
+				return expect(data).to.eventually.have.property('rawData').that.is.deep.equal(solution.rawData);
 			});
 		}
 
 		[
-			{ filename: 'argenta.csv' },
-			{ filename: 'argenta 2.csv' },
-			{ filename: 'belfius.csv' },
-			{ filename: 'kbc.csv' }
+			{ filename: 'argenta.csv' }
 		].forEach(testFileReading);
 		
 	});
 
 	describe("prepares the data correctly", function() {
-		var readFile = require("../fileHandler/fileReader.action");
-		var argentaPreparer = require('../fileHandler/dataPreparer.argenta.action');
-
+		var assignDataHelpers = require("../fileHandler/dataHelpersAssigner.action");
+		
 		function testDataPreparation(example) {
-			var data = readFile({filename: './testDataFiles/'+example.filename}).then(example.preparer);
-			it("should prepare " + example.bank + " file " + example.filename + " correctly", function() {
-				return expect(data).to.eventually.have.property('preparedData').that.is.not.empty;
+			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
+			
+			it("should prepare " + example.filename + " correctly", function() {
+				var data = assignDataHelpers({bank: solution.bank, rawData: solution.rawData})
+					.then(function(fileToParse) {
+						return fileToParse.dataPreparer(fileToParse);
+					});
+				return expect(data).to.eventually.have.property('preparedData').that.is.deep.equal(solution.preparedData);
 			});
 		}
 
 		[
-			{ bank: 'argenta', filename: 'argenta.csv', preparer: argentaPreparer },
-			{ bank: 'argenta', filename: 'argenta 2.csv', preparer: argentaPreparer }
+			{ filename: 'argenta.csv' }
 		].forEach(testDataPreparation);
 
 	});
 
 	describe("parses the data correctly", function() {
-		var readFile = require("../fileHandler/fileReader.action");
-		var argentaPreparer = require('../fileHandler/dataPreparer.argenta.action');
 		var parseData = require('../fileHandler/dataParser.action');
 
 		function testDataParsing(example) {
-			var data = readFile({filename: './testDataFiles/'+example.filename}).then(example.preparer).then(parseData);
+			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
+			var data = parseData({preparedData: solution.preparedData}).then(example.preparer).then(parseData);
+
 			it("should add the parsed data to a dataArray attribute", function() {
 				return expect(data).to.eventually.have.property('dataArray').that.is.not.empty;
 			});
-			it("has read the correct number of records", function() {
-				return expect(data).to.eventually.have.property('dataArray').with.length(example.records);
+			it("has performed the correct parsing", function() {
+				return expect(data).to.eventually.have.property('dataArray').that.is.deep.equal(solution.dataArray);
 			});
 		}
 
 		[
-			{ bank: 'argenta', filename: 'argenta.csv', preparer: argentaPreparer, records: 3 },
-			{ bank: 'argenta', filename: 'argenta 2.csv', preparer: argentaPreparer, records: 3 }
+			{ filename: 'argenta.csv' }
 		].forEach(testDataParsing);
 
 	});
 
-	describe("maps the data fields to the internal model", function() {
-		var readFile = require("../fileHandler/fileReader.action");
-		var argentaPreparer = require('../fileHandler/dataPreparer.argenta.action');
-		var parseData = require('../fileHandler/dataParser.action');
-		var argentaMapper = require('../fileHandler/dataMapper.argenta.action');
+	// tests two separate actions at once, since syntaxFixer modifies the verrichtingData field instead of creating its own field.
+	// Currently fails because verrichtingeRepo adds fields to verrichtingData which it does not expect.
+	describe("maps the data fields to the internal model and fixes the syntax", function() {
+		var assignDataHelpers = require("../fileHandler/dataHelpersAssigner.action");
+		var fixSyntax = require('../fileHandler/syntaxFixer.action');
 
 		function testDataMapping(example) {
-			var data = readFile({filename: './testDataFiles/'+example.filename}).then(example.preparer).then(parseData).then(example.dataMapper);
-			it("has populated the field verrichtingData", function() {
-				return expect(data).to.eventually.have.property('verrichtingData').that.is.not.empty;
+			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
+
+			var data = assignDataHelpers({dataArray: solution.dataArray, bank: solution.bank})
+				.then(function(fileToParse) {
+					return fileToParse.dataMapper(fileToParse);
+				})
+				.then(fixSyntax);
+			it("has populated the field verrichtingData correctly.", function() {
+				return expect(data).to.eventually.have.property('verrichtingData').that.is.deep.equal(solution.verrichtingData);
 			});
-			it("has a date");
-			/*
-			LEARN HOW TO DO DEEP EXISTS
-			, function() {
-				return expect(data).to.eventually.have.property('verrichtingData').that.has.a.property('datum');
-			});
-			*/
 		}
 
 		[
-			{ bank: 'argenta', filename: 'argenta.csv', preparer: argentaPreparer, dataMapper: argentaMapper},
-			{ bank: 'argenta', filename: 'argenta 2.csv', preparer: argentaPreparer, dataMapper: argentaMapper}
+			{ filename: 'argenta.csv' }
 		].forEach(testDataMapping);
 
 
 	});
 
-	// These tests should be performed at the level of a verrichting, not at the file level. 
-	// Perhaps even the one above: this shows why the deep nesting was a problem
-	describe("fixes the syntax of the data fields", function() {
-		var readFile = require("../fileHandler/fileReader.action");
-		var argentaPreparer = require('../fileHandler/dataPreparer.argenta.action');
-		var parseData = require('../fileHandler/dataParser.action');
-		var argentaMapper = require('../fileHandler/dataMapper.argenta.action');
-		var fixSyntax = require('../fileHandler/syntaxFixer.action');
 
-		function testFieldSyntax(example) {
-			var data = readFile({filename: './testDataFiles/'+example.filename}).then(example.preparer).then(parseData).then(example.dataMapper).then(fixSyntax);
-			it("has has a bedrag with no commas", function() {
-				return expect(data).to.eventually.have.property('verrichtingData').that.is.not.empty;
-			});
-		}
-
-		[
-			{ bank: 'argenta', filename: 'argenta.csv', preparer: argentaPreparer, dataMapper: argentaMapper},
-			{ bank: 'argenta', filename: 'argenta 2.csv', preparer: argentaPreparer, dataMapper: argentaMapper}
-		].forEach(testFieldSyntax);
-	});
-
+	// This test fails because ids are regenerated every time (which is correct), but this means no deep.equal can be used. 
+	// Or can exceptions to deep equal be specified?
 	describe("creates a new Verrichting", function() {
-		var readFile = require("../fileHandler/fileReader.action");
-		var argentaPreparer = require('../fileHandler/dataPreparer.argenta.action');
-		var parseData = require('../fileHandler/dataParser.action');
-		var argentaMapper = require('../fileHandler/dataMapper.argenta.action');
-		var fixSyntax = require('../fileHandler/syntaxFixer.action');
 		var createVerrichtingen = require('../fileHandler/verrichtingenCreator.action');
 		
 		function testVerrichtingCreation(example) {
-			var data = readFile({filename: './testDataFiles/'+example.filename}).then(example.preparer).then(parseData).then(example.dataMapper).then(fixSyntax).then(createVerrichtingen);
+			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
+
+			var data = createVerrichtingen({verrichtingData: solution.verrichtingData});
 			it("has something", function() {
-				return expect(data).to.eventually.have.property('verrichtingData').that.is.not.empty;
+				return expect(data).to.eventually.have.property('verrichtingen').that.is.deep.equal(solution.verrichtingen);
 			});
-			it("has an id");
-			it("has status imported");
+			
 		}
 
 		[
-			{ bank: 'argenta', filename: 'argenta.csv', preparer: argentaPreparer, dataMapper: argentaMapper},
-			{ bank: 'argenta', filename: 'argenta 2.csv', preparer: argentaPreparer, dataMapper: argentaMapper}
+			{ filename: 'argenta.csv' }
 		].forEach(testVerrichtingCreation);
 	});
 
+/*
+	// How do we test the database? Integration test?
 	describe("saves the verrichtingen to a db", function() {
 
 		var readFile = require("../fileHandler/fileReader.action");
@@ -238,4 +224,5 @@ describe("Workflow for one new file", function() {
 		].forEach(testSave);
 
 	});
+*/
 });

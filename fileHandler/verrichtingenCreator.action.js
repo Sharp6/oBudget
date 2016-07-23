@@ -5,6 +5,7 @@ function createVerrichtingen(fileToParse) {
 		fileToParse.verrichtingen = fileToParse.verrichtingData.map(function(data) {
 			return verrichtingRepo.create(data);
 		});
+		resolve(fileToParse);
 	});
 }
 

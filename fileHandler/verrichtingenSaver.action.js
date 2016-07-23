@@ -12,3 +12,5 @@ function saveVerrichtingen(fileToParse) {
 			});
 	});
 }
+
+module.exports = saveVerrichtingen;

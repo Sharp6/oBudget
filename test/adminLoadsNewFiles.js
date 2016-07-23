@@ -22,7 +22,9 @@ describe("Files are loaded", function() {
 
 // inside out
 describe("Workflow for one new file", function() {
-	
+	// for a workflow, it should be tested that all actions are called once.
+
+	// Below are the tests for the individual actions. These should probably be separated.	
 	describe("Identifies the bank correctly", function() {
 		var determineBank = require("../fileHandler/bankDeterminer.action");
 
@@ -160,7 +162,9 @@ describe("Workflow for one new file", function() {
 
 		function testFieldSyntax(example) {
 			var data = readFile({filename: './testDataFiles/'+example.filename}).then(example.preparer).then(parseData).then(example.dataMapper).then(fixSyntax);
-			it("has has a bedrag with no commas");
+			it("has has a bedrag with no commas", function() {
+				return expect(data).to.eventually.have.property('verrichtingData').that.is.not.empty;
+			});
 		}
 
 		[
@@ -178,6 +182,10 @@ describe("Workflow for one new file", function() {
 		var createVerrichtingen = require('../fileHandler/verrichtingenCreator.action');
 		
 		function testVerrichtingCreation(example) {
+			var data = readFile({filename: './testDataFiles/'+example.filename}).then(example.preparer).then(parseData).then(example.dataMapper).then(fixSyntax).then(createVerrichtingen);
+			it("has something", function() {
+				return expect(data).to.eventually.have.property('verrichtingData').that.is.not.empty;
+			});
 			it("has an id");
 			it("has status imported");
 		}
@@ -199,10 +207,29 @@ describe("Workflow for one new file", function() {
 		var saveVerrichtingen = require('../fileHandler/verrichtingenSaver.action');
 
 		var mongoose = require('mongoose');
-		mongoose.connect('mongodb://localhost/phinanceTest');
+		mongoose.connect('mongodb://localhost/obudgetTest');
+		var verrichtingDA = require('../verrichtingen/verrichting.da.server');
+
+
+		beforeEach(function() {
+			verrichtingDA.deleteAll();
+		});
+
+		afterEach(function() {
+			verrichtingDA.deleteAll();
+		});
 
 		function testSave(example) {
-			var data = readFile({filename: './testDataFiles/'+example.filename}).then(example.preparer).then(parseData).then(example.dataMapper).then(fixSyntax).then(createVerrichtingen).then(saveVerrichtingen);
+			it("should have saved verrichtingen", function() {
+				var data = readFile({filename: './testDataFiles/'+example.filename})
+					.then(example.preparer).then(parseData).then(example.dataMapper).then(fixSyntax).then(createVerrichtingen)
+					.then(saveVerrichtingen).catch(function(err)
+						{
+							console.log("ERR",err);
+						});
+				// we should be able to check if the database has the correct number of records
+				return expect(data).to.eventually.have.property('verrichtingData').that.is.not.empty;
+			});
 		}
 
 		[

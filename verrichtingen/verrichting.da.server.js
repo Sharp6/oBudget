@@ -18,9 +18,34 @@ var VerrichtingDA = function() {
 
 	var VerrichtingModel = mongoose.model('Verrichting', verrichtingSchema);
 
+	function getAll() {
+		return new Promise(function(resolve,reject) {
+			VerrichtingModel.find().exec(function(err,doc) {
+				if(err) {
+					reject(err);
+				} else {
+					console.log("DA:", doc);
+					resolve(doc);
+				}
+			});
+		});
+	}
+
+	function deleteAll() {
+		return new Promise(function(resolve,reject) {
+			VerrichtingModel.remove({}, function(err,result) {
+				if(err) {
+					return reject(err);
+				}
+				console.log("DA: DELETED");
+				return resolve(result);
+			});
+		});
+	}
+
 	function save(verrichting) {
 		return new Promise(function(resolve,reject) {
-			verrichtingModel.findOne({ verrichtingId: verrichting.verrichtingId }).exec(function(err,doc) {
+			VerrichtingModel.findOne({ verrichtingId: verrichting.verrichtingId }).exec(function(err,doc) {
 				if(err) {
 					reject(err);
 					return;
@@ -29,6 +54,7 @@ var VerrichtingDA = function() {
 					console.log("VERRICHTINGDA: DOC FOUND, AN UPDATE SHOULD HAPPEN");
 					resolve();
 				} else {
+					console.log("DA: I'M SAVING");
 					var verrichtingModel = new VerrichtingModel({
 						verrichtingId: verrichting.verrichtingId,
 						bankRef: verrichting.bankRef,
@@ -48,6 +74,7 @@ var VerrichtingDA = function() {
 						if (err) {
 							reject(err);
 						} else {
+							console.log("DA: I'M DONE SAVING");
 							resolve();
 						}
 					});
@@ -57,7 +84,9 @@ var VerrichtingDA = function() {
 	}
 
 	return {
-		save: save
+		save: save,
+		getAll: getAll,
+		deleteAll: deleteAll
 	};
 };
 

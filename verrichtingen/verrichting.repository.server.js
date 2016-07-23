@@ -10,9 +10,25 @@ var verrichtingRepo = function() {
 		return new Verrichting(data);
 	}
 
+	function getAll() {
+		return verrichtingDA.getAll()
+			.then(function(verrichtingenData) {
+				return verrichtingenData.map(function(verrichtingData) {
+					return new Verrichting(verrichtingData);
+				});
+			});
+	}
+
 	function save(verrichting) {
+		console.log("REPO: SAVING");
 		return verrichtingDA.save(verrichting);
 	}
+
+	return {
+		create: create,
+		getAll: getAll,
+		save: save
+	};
 };
 
-module.exports = verrichtingRepo();
+module.exports = new verrichtingRepo();

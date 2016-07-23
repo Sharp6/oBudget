@@ -1,5 +1,5 @@
 var Verrichting = function(data) {
-	this.verrichtingId = verrichtingId;
+	this.verrichtingId = data.verrichtingId;
 	this.status = data.status;
 
 	this.bankRef = data.bankRef || '';
@@ -14,4 +14,4 @@ var Verrichting = function(data) {
 	this.bank = data.bank || '';
 };
 
-return Verrichting;
+module.exports = Verrichting;

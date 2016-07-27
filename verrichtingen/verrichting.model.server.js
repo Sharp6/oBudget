@@ -1,9 +1,10 @@
 var Verrichting = function(data) {
 	this.verrichtingId = data.verrichtingId;
 	this.status = data.status;
+	this.csum = data.csum;
 
 	this.bankRef = data.bankRef || '';
-	this.datum = data.datum || '';
+	this.datum =data.datum || '';
 	this.bedrag = data.bedrag || '';
 	this.rekeningTegenpartij = data.rekeningTegenpartij || '';
 	this.valuta = data.valuta || '';

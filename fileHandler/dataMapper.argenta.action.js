@@ -15,7 +15,7 @@ function mapArgentaRecord(data) {
 		naamTegenpartij: data['Naam v/d tegenpartij :'],
 		type: data['Beschrijving'],
 		mededeling: data['Mededeling 1 :'],
-		info: data.rekeningTegenpartij + " - " + data.naamTegenpartij + " - " + data['Beschrijving'] + " - " + data['Mededeling 1 :'] + " - " + data['Mededeling 2 :'],
+		info: data['Rekening tegenpartij'] + " - " + data['Naam v/d tegenpartij :'] + " - " + data['Beschrijving'] + " - " + data['Mededeling 1 :'] + " - " + data['Mededeling 2 :'],
 		bank: 'argenta'
 	};
 }

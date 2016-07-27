@@ -7,7 +7,6 @@ function saveVerrichtingen(fileToParse) {
 		});
 		return Promise.all(promises)
 			.then(function(resultsArray) {
-				console.log("All verrichtingen are persisted.");
 				resolve(fileToParse);
 			});
 	});

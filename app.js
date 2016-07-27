@@ -12,7 +12,12 @@ var api = require('./routes/api');
 */
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/obudgetTest');
+if(process.env.NODE_ENV === "test") {
+    mongoose.connect('mongodb://localhost/obudgetTest');
+}
+if(process.env.NODE_ENV === "dev") {
+    mongoose.connect('mongodb://localhost/obudgetDev');
+}
 
 var app = express();
 

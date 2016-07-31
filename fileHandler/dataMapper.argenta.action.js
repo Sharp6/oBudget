@@ -1,11 +1,15 @@
 function argentaMapper(fileToParse) {
 	return new Promise(function(resolve,reject) {
 		fileToParse.verrichtingData = fileToParse.dataArray.map(mapArgentaRecord);
+		console.log("DATUM IN VERRICHTINGDATA", fileToParse.verrichtingData[0].datum);
 		resolve(fileToParse);
 	});
 }
 
 function mapArgentaRecord(data) {
+
+	console.log("DATUM IN MAPPER", data.Valutadatum);
+
 	return {
 		bankRef: data['Ref. v/d verrichting'],
 		datum: data['Valutadatum'],

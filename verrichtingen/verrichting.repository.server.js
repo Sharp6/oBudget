@@ -2,7 +2,7 @@ var Verrichting = require('./verrichting.model.server');
 var verrichtingDA = require('./verrichting.da.server');
 var uuid = require('uuid');
 var checksum = require('checksum');
-var moment = require('moment');
+var moment = require('moment-timezone');
 
 var verrichtingRepo = function() {
 	var _verrichtingen = [];
@@ -11,7 +11,8 @@ var verrichtingRepo = function() {
 		data.verrichtingId = uuid.v1();
 		data.status = 'imported';
 		data.csum = checksum(data.bedrag + data.datum + data.mededeling);
-		data.datum = moment(data.datum, "DD/MM/YYYY");
+		data.datum = moment.tz(data.datum, "DD-MM-YYYY", "Europe/Brussels");
+		console.log("REPO", data.datum.toString());
 		// add timestamp?
 		
 		return new Verrichting(data);

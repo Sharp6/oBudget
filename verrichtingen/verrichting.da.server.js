@@ -20,11 +20,6 @@ var VerrichtingDA = function() {
 
 	var VerrichtingModel = mongoose.model('Verrichting', verrichtingSchema);
 
-	function fixDBSpecificFields(data) {
-		//data.datum = moment(data.datum);
-		return data;
-	}
-
 	function getAll() {
 		return new Promise(function(resolve,reject) {
 			VerrichtingModel.find().exec(function(err,doc) {
@@ -34,9 +29,6 @@ var VerrichtingDA = function() {
 					resolve(doc);
 				}
 			});
-		})
-		.then(function(doc) {
-			return doc.map(fixDBSpecificFields);
 		});
 	}
 
@@ -49,9 +41,6 @@ var VerrichtingDA = function() {
 					resolve(result[0]);
 				}
 			});
-		})
-		.then(function(result) {
-			return fixDBSpecificFields(result);
 		});
 	}
 

@@ -51,7 +51,7 @@ describe("The verrichting repository", function() {
 		return expect(ids[0]).to.not.equal(ids[1]);
 	});
 
-	it.only("should remove duplicates", function() {
+	it("should remove duplicates", function() {
 		var solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
 
 		var data = Promise.all([createVerrichtingen({ verrichtingData: solution.verrichtingData }), createVerrichtingen({ verrichtingData: solution.verrichtingData })])
@@ -68,7 +68,6 @@ describe("The verrichting repository", function() {
 					var chain = Promise.resolve();
 					verrichtingen.forEach(function(verrichting) {
 						chain = chain.then(function() {
-							console.log("REPO TEST, calling next handleDuplicates");
 							return verrichtingRepo.handleDuplicates(verrichting.csum);
 						});
 					});
@@ -86,5 +85,4 @@ describe("The verrichting repository", function() {
 
 		return expect(data).to.eventually.have.length(3);
 	});
-	
 });

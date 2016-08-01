@@ -8,19 +8,27 @@ var verrichtingRepo = function() {
 	var _verrichtingen = [];
 
 	function create(data) {
-		data.verrichtingId = uuid.v1();
-		data.status = 'imported';
-		data.csum = checksum(data.bedrag + data.datum + data.mededeling);
-		data.datum = moment.tz(data.datum, "DD-MM-YYYY", "Europe/Brussels");
-		console.log("REPO", data.datum.toString());
+		var augmentedData = {};
+    for (var dataAttribute in data) { augmentedData[dataAttribute] = data[dataAttribute]; }
+
+		augmentedData.verrichtingId = uuid.v4();
+		augmentedData.status = 'imported';
+		augmentedData.csum = checksum(data.bedrag + data.datum + data.mededeling);
+		augmentedData.datum = moment.tz(data.datum, "DD-MM-YYYY", "Europe/Brussels");
+		//console.log("REPO", augmentedData.datum.toString());
 		// add timestamp?
+
+		var newVerrichting = new Verrichting(augmentedData);
+		console.log("REPO: ADDING TO _VERRICHTINGEN " + newVerrichting.verrichtingId);
+		_verrichtingen.push(newVerrichting);
 		
-		return new Verrichting(data);
+		return newVerrichting;
 	}
 
 	function getAll() {
 		return verrichtingDA.getAll()
 			.then(function(verrichtingenData) {
+				console.log("REPO GETALL, LENGTH:", verrichtingenData.length);
 				var promises = verrichtingenData.map(function(verrichtingData) {
 					return getVerrichtingByData(verrichtingData);
 				});
@@ -40,6 +48,7 @@ var verrichtingRepo = function() {
 				verrichtingDA.get(verrichtingId)
 					.then(function(verrichtingData) {
 						var newVerrichting = new Verrichting(verrichtingData);
+						console.log("REPO: ADDING TO _VERRICHTINGEN " + newVerrichting.verrichtingId);
 						_verrichtingen.push(newVerrichting);
 						resolve(newVerrichting);
 					})
@@ -59,6 +68,7 @@ var verrichtingRepo = function() {
 				resolve(verrichting);
 			} else {
 				var newVerrichting = new Verrichting(verrichtingData);
+				console.log("REPO: ADDING TO _VERRICHTINGEN " + newVerrichting.verrichtingId);
 				_verrichtingen.push(newVerrichting);
 				resolve(newVerrichting);
 			}
@@ -80,12 +90,14 @@ var verrichtingRepo = function() {
 		})
 		.then(function(response) {
 			if(response.count > 1) {
+				// We have duplicates in the checksum!
 				var promises = response.results.map(function(verrichtingData) {
 					return getVerrichtingByData(verrichtingData);
 				});
 				return Promise.all(promises)
 					.then(_resolveDuplicates);
 			} else {
+				// We have no duplicates in the checksum
 				return new Promise(function(resolve, reject) {
 					resolve();
 				});
@@ -94,6 +106,7 @@ var verrichtingRepo = function() {
 	}
 
 	function _resolveDuplicates(duplicatesArray) {
+		console.log("DUPLICATERESOLVER: got a duplicatesArray for checksum", duplicatesArray[0].csum, "of length", duplicatesArray.length);
 		// 1. check if one of the duplicates is already classified.
 		var classifiedVerrichting = duplicatesArray.find(function(verrichting) {
 			return verrichting.status === "classified";
@@ -104,16 +117,21 @@ var verrichtingRepo = function() {
 			return verrichtingDA.removeBulk(theRest);
 		} else {
 			// 1b. if not, keep a random one, set its state to notDuplicate, and delete the rest.
-			randomVerrichting = duplicatesArray.splice(0,1);
+			var randomVerrichting = duplicatesArray.splice(0,1)[0];
+			console.log("DUPLICATERESOLVER: splicing duplicatesArray, length is now", duplicatesArray.length);
+			console.log("DUPLICATERESOLVER: randomVerrichting", randomVerrichting.verrichtingId);
 			randomVerrichting.status = "notDuplicate";
 			return verrichtingDA.save(randomVerrichting)
 				.then(function() {
+					console.log("DUPLICATERESOLVER: DAREMOVEBULKING " + duplicatesArray.length + " verrichtingen.");
 					return verrichtingDA.removeBulk(duplicatesArray);
 				})
 				.then(function() {
+					console.log("DUPLICATERESOLVER: SPLICING " + duplicatesArray.length + " verrichtingen.");
 					duplicatesArray.forEach(function(verrichting) {
 						_verrichtingen.splice(_verrichtingen.indexOf(verrichting), 1);
 					});
+					return Promise.resolve();
 				});
 		}
 	}

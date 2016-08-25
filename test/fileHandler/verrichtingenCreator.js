@@ -26,3 +26,33 @@ describe("The action verrichtingenCreator", function() {
 		return expect(data).to.eventually.have.property('verrichtingen').with.length(3);
 	});
 });
+
+describe("creates a new Verrichting", function() {
+	function removeFields(verrichtingen) {
+		verrichtingen.forEach(function(verrichting) {
+			// Fields which will not be the same.
+			delete verrichting.verrichtingId;
+			delete verrichting.datum;
+		});
+	}
+	
+	function testVerrichtingCreation(example) {
+		var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
+		removeFields(solution.verrichtingen);
+
+		it("has something", function() {
+			var data = createVerrichtingen({fixedVerrichtingData: solution.fixedVerrichtingData})
+				.then(function(fileToParse) {
+					removeFields(fileToParse.verrichtingen);
+					return fileToParse;
+				});
+
+			return expect(data).to.eventually.have.property('verrichtingen').that.is.deep.equal(solution.verrichtingen);
+		});
+		
+	}
+
+	[
+		{ filename: 'argenta.csv' }
+	].forEach(testVerrichtingCreation);
+});

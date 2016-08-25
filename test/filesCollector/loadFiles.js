@@ -5,7 +5,7 @@ var sinon = require("sinon");
 
 var filesCollector = require('../../filesCollector');
 
-describe.only("Files are loaded", function() {
+describe("Files are loaded", function() {
 	context("Given that files are present in the directory", function() {
 		it("finds 4 files", function() {
 			return expect(filesCollector.loadFiles("./testDataFiles")).to.eventually.have.length(4);

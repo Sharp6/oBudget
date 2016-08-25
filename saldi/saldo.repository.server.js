@@ -1,11 +1,16 @@
 var Saldo = require('./saldo.model.server');
 var saldoDA = require('./saldo.da.server');
+var uuid = require('uuid');
 
 var saldoRepo = function() {
 	var _saldi = [];
 
 	function create(data) {
-		var newSaldo = new Saldo(data);
+		var augmentedData = {};
+    for (var dataAttribute in data) { augmentedData[dataAttribute] = data[dataAttribute]; }
+		augmentedData.saldoId = uuid.v4();
+
+		var newSaldo = new Saldo(augmentedData);
 		_saldi.push(newSaldo);
 		return newSaldo;
 	}

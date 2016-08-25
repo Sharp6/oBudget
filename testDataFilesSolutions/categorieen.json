@@ -1,0 +1,17 @@
+[
+	{
+		"naam": "hobby"
+	}, 
+	{
+		"naam": "elektronica",
+		"parentCategorieNaam": "hobby"
+	},
+	{
+		"naam": "muziek",
+		"parentCategorieNaam": "hobby"
+	},
+	{
+		"naam": "Arduino",
+		"parentCategorieNaam": "elektronica"
+	}
+]

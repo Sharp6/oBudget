@@ -22,8 +22,24 @@ if(process.env.NODE_ENV === "dev") {
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hjs');
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'hjs');
+var exphbs = require('express-handlebars');
+app.engine('.hbs', exphbs({
+  defaultLayout: 'single',
+  extname: '.hbs',
+  layoutsDir: path.join(__dirname, 'views/layouts'),
+  partialsDir: path.join(__dirname, 'views/partials'),
+  helpers: {
+    ifIn: function(elem, list, options) {
+      if(list.indexOf(elem) > -1) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    }
+  }
+}));
+app.set('view engine', '.hbs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -34,6 +50,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 require('./verrichtingen').routes(app);
+app.use(require('./banken/bank.routes.server'));
+app.use(require('./categorieen/categorie.routes.server'));
 
 /*
 app.use('/', routes);

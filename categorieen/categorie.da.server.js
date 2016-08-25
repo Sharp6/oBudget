@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var CategorieDA = function() {
 	var categorieSchema = new mongoose.Schema({
 		naam: String,
-		parentCategorie: String
+		parentCategorieNaam: String
 	});
 
 	var CategorieModel = mongoose.model('Categorie', categorieSchema);
@@ -72,7 +72,7 @@ var CategorieDA = function() {
 		.then(function(categorieModel) {
 			return new Promise(function(resolve,reject) {
 				categorieModel.naam = categorie.naam;
-				categorieModel.parentCategorie = categorie.parentCategorie;
+				categorieModel.parentCategorieNaam = categorie.parentCategorieNaam;
 				
 				categorieModel.save(function (err) {
 					if (err) {
@@ -85,12 +85,38 @@ var CategorieDA = function() {
 		});
 	}
 
+	function search(queryParams) {
+		return new Promise(function(resolve,reject) {
+			var queryCriteria = [];
+			if(queryParams.parentCategorieNaam && queryParams.parentCategorieNaam !== "undefined") {
+				queryCriteria.push({parentCategorieNaam: queryParams.parentCategorieNaam});
+			}
+
+			var queryObject = {};
+			if(queryCriteria.length > 0) {
+				queryObject.$and = queryCriteria;
+			}
+
+			var query = CategorieModel.find(queryObject);
+			//var query = CategorieModel.find({parentCategorieNaam: queryParams.parentCategorieNaam});
+
+			query.exec(function(err,result) {
+				if(err) {
+					reject(err);
+				} else {
+					resolve(result);
+				}
+			});
+		});
+	}
+
 	return {
 		save: save,
 		get: get,
 		getAll: getAll,
 		removeAll: removeAll,
-		remove: remove
+		remove: remove,
+		search: search
 	};
 };
 

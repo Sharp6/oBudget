@@ -1,0 +1,28 @@
+var chai = require("chai"), expect = chai.expect;
+chai.use(require('chai-as-promised'));
+chai.use(require('sinon-chai'));
+chai.use(require('chai-shallow-deep-equal'));
+var sinon = require("sinon");
+
+var mongoose = require('mongoose');
+var moment = require('moment-timezone');
+var fs = require('fs');
+
+function loadSolution(filename) {
+	return JSON.parse(fs.readFileSync(filename).toString());
+}
+
+var createVerrichtingen = require("../../fileHandler/verrichtingenCreator.action");
+
+describe("The action verrichtingenCreator", function() {
+	var solution, data;
+
+	beforeEach(function() {
+		solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
+		data = createVerrichtingen({fixedVerrichtingData: solution.fixedVerrichtingData});
+	});
+
+	it("should add a verrichtingen array", function() {
+		return expect(data).to.eventually.have.property('verrichtingen').with.length(3);
+	});
+});

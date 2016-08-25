@@ -1,0 +1,10 @@
+<h2>{{bank.naam}}</h2>
+
+<form action="/editBank/{{bank.naam}}" method="POST">
+	<div class="form-group">
+		<label for="startSaldo">Startsaldo:</label>
+		<input type="text" name="startSaldo" id="startSaldo" class="form-control" placeholder="startsaldo" value="{{bank.startSaldo}}" />
+	</div>
+	
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>

@@ -18,9 +18,12 @@ describe("The verrichting repository", function() {
 	var createVerrichtingen = require('../fileHandler/verrichtingenCreator.action');
 	var saveVerrichtingen = require('../fileHandler/verrichtingenSaver.action');
 
+	var solution;
+
 	beforeEach(function() {
 		mongoose.connect('mongodb://localhost/obudgetTest');
 		verrichtingDA.removeAll();
+		solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
 	});
 
 	afterEach(function(done) {
@@ -54,7 +57,7 @@ describe("The verrichting repository", function() {
 	it("should remove duplicates", function() {
 		var solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
 
-		var data = Promise.all([createVerrichtingen({ verrichtingData: solution.verrichtingData }), createVerrichtingen({ verrichtingData: solution.verrichtingData })])
+		var data = Promise.all([createVerrichtingen({ fixedVerrichtingData: solution.fixedVerrichtingData }), createVerrichtingen({ fixedVerrichtingData: solution.fixedVerrichtingData })])
 			.then(function(responses) {
 				return responses[0].verrichtingen.concat(responses[1].verrichtingen);
 			})
@@ -85,4 +88,17 @@ describe("The verrichting repository", function() {
 
 		return expect(data).to.eventually.have.length(3);
 	});
+	
+	describe("using finders", function() {
+		it("should return the correct verrichtingen", function() {
+			var data = saveVerrichtingen({ verrichtingen: solution.verrichtingen })
+				.then(verrichtingRepo.getAll)
+				.then(function(verrichtingen) {
+					return verrichtingRepo.findVerrichtingenForBankBefore(verrichtingen[0].bank, verrichtingen[0].datum);
+				});
+
+			return expect(data).to.eventually.have.length(3);
+		});
+	});
+
 });

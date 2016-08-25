@@ -38,7 +38,6 @@ describe("The verrichtingDA", function() {
 			.then(verrichtingDA.getAll)
 			.then(function(verrichtingen) {
 				var verrichting = verrichtingen[0];
-
 				return verrichting;
 			});
 

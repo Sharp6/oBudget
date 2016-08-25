@@ -1,0 +1,31 @@
+<h2>Banken</h2>
+
+<table class="table">
+<thead>
+<tr>
+	<th>Naam</th>
+	<th>Details</th>
+	<th>Edit</th>
+</tr>
+</thead>
+
+<tbody>
+{{#banken}}
+	<tr>
+		<td>{{naam}}</td>
+		<td>
+			<a href="/bank/{{naam}}">
+				link
+			</a>
+		</td>
+		<td>
+			<a href="/editBank/{{naam}}">
+				link
+			</a>
+		</td>
+	</tr>
+{{/banken}}
+</tbody>
+</table>
+
+<p><a href="/createBank">+ Nieuwe bank</a></p>

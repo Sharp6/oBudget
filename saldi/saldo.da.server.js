@@ -98,4 +98,4 @@ var saldoDA = function() {
 	};
 };
 
-module.exports = new SaldoDA();
+module.exports = new saldoDA();

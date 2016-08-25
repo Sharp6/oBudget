@@ -1,12 +1,16 @@
 function fixSyntax(fileToParse) {
 	return new Promise(function(resolve,reject) {
 		
-		fileToParse.verrichtingData.forEach(function(record) {
-			var bedragString = record.bedrag.toString();
+		fileToParse.fixedVerrichtingData = fileToParse.verrichtingData.map(function(data) {
+			var fixedData = {};
+			for (var dataAttribute in data) { fixedData[dataAttribute] = data[dataAttribute]; }
+
+			var bedragString = fixedData.bedrag.toString();
 			bedragString = bedragString.replace('.', '');
 			bedragString = bedragString.replace(',', '.');
-			record.bedrag = parseFloat(bedragString);
+			fixedData.bedrag = parseFloat(bedragString);
 
+			return fixedData;
 			//data.datumObject = moment(data.datumVerrichting, "DD-MM-YYYY");
 		});
 		resolve(fileToParse);

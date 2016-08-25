@@ -6,7 +6,8 @@ function assignDataHelpers(fileToParse) {
 		};
 
 		var dataMappers = {
-			argenta: require("./dataMapper.argenta.action")
+			argenta: require("./dataMapper.argenta.action"),
+			belfius: require("./dataMapper.belfius.action")
 		};
 
 		if(dataPreparers[fileToParse.bank] && dataMappers[fileToParse.bank]) {

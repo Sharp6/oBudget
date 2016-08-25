@@ -78,10 +78,10 @@ var VerrichtingDA = function() {
 				var queryCriteria = [];
 				var options = {};
 				if(queryParams.beginDatum && queryParams.beginDatum !== "undefined") {
-					queryCriteria.push({datum: {$gt:queryParams.beginDatum}});
+					queryCriteria.push({datum: {$gte:queryParams.beginDatum}});
 				}
 				if(queryParams.eindDatum && queryParams.eindDatum !== "undefined") {
-					queryCriteria.push({datum: {$lt:queryParams.eindDatum}});
+					queryCriteria.push({datum: {$lte:queryParams.eindDatum}});
 				}
 				if(queryParams.datum && queryParams.datum !== "undefined") {
 					queryCriteria.push({datum: queryParams.datum});
@@ -139,7 +139,7 @@ var VerrichtingDA = function() {
 								reject(err);
 							} else {
 								var response = {};
-								response.results = results.map(fixDBSpecificFields);
+								response.results = results;
 								response.count = count;
 								resolve(response);
 							}

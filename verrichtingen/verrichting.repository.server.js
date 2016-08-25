@@ -35,8 +35,8 @@ var verrichtingRepo = function() {
 
 	function getVerrichtingById(verrichtingId) {
 		return new Promise(function(resolve,reject) {
-			var verriching = _verrichtingen.find(function(verrichting) {
-				return verrichting.verrichtingId === verrichtingId;
+			var verrichting = _verrichtingen.find(function(verrichting) {
+				return verrichting && verrichting.verrichtingId === verrichtingId;
 			});
 			if(verrichting) {
 				resolve(verrichting);
@@ -49,7 +49,7 @@ var verrichtingRepo = function() {
 						resolve(newVerrichting);
 					})
 					.catch(function(err) {
-						reject(err);
+						reject("Err in verrichtingRepo: " + err);
 					});
 			}
 		});
@@ -58,7 +58,7 @@ var verrichtingRepo = function() {
 	function getVerrichtingByData(verrichtingData) {
 		return new Promise(function(resolve,reject) {
 			var verrichting = _verrichtingen.find(function(verrichting) {
-				return verrichting.verrichtingId === verrichtingData.verrichtingId;
+				return verrichting && verrichting.verrichtingId === verrichtingData.verrichtingId;
 			});
 			if(verrichting) {
 				resolve(verrichting);
@@ -68,6 +68,13 @@ var verrichtingRepo = function() {
 				resolve(newVerrichting);
 			}
 		});
+	}
+
+	function getVerrichtingenByData(verrichtingenData) {
+		var promises = verrichtingenData.map(function(verrichtingData) {
+			return getVerrichtingByData(verrichtingData);
+		});
+		return Promise.all(promises);
 	}
 
 	function save(verrichting) {
@@ -122,11 +129,24 @@ var verrichtingRepo = function() {
 		}
 	}
 
+	// FINDERS
+	function findVerrichtingenForBankBefore(bankName, endDate) {
+		return verrichtingDA.search({
+			bank: bankName,
+			eindDatum: endDate
+		})
+		.then(function(response) {
+			return getVerrichtingenByData(response.results);
+		});
+	}
+
 	return {
 		create: create,
 		getAll: getAll,
+		getVerrichtingById: getVerrichtingById,
 		save: save,
-		handleDuplicates: handleDuplicates
+		handleDuplicates: handleDuplicates,
+		findVerrichtingenForBankBefore: findVerrichtingenForBankBefore
 	};
 };
 

@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var moment = require('moment-timezone');
 var fs = require('fs');
 
-describe.only("Banken", function() {
+describe("Banken", function() {
 	describe("DA", function() {
 
 		var bankDA = require('../banken/bank.da.server');

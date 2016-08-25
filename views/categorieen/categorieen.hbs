@@ -1,0 +1,31 @@
+<h2>Categorieën</h2>
+
+<table class="table">
+<thead>
+<tr>
+	<th>Naam</th>
+	<th>Details</th>
+	<th>Edit</th>
+</tr>
+</thead>
+
+<tbody>
+{{#categorieen}}
+	<tr>
+		<td>{{naam}}</td>
+		<td>
+			<a href="/categorie/{{naam}}">
+				link
+			</a>
+		</td>
+		<td>
+			<a href="/editCategorie/{{naam}}">
+				link
+			</a>
+		</td>
+	</tr>
+{{/categorieen}}
+</tbody>
+</table>
+
+<p><a href="/createCategorie">+ Nieuwe categorie</a></p>

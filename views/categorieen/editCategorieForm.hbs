@@ -1,0 +1,10 @@
+<h2>{{categorie.naam}}</h2>
+
+<form action="/editCategorie/{{categorie.naam}}" method="POST">
+	<div class="form-group">
+		<label for="parentCategorieNaam">Onderdeel van:</label>
+		<input type="text" name="parentCategorieNaam" id="parentCategorieNaam" class="form-control" placeholder="parentCategorieNaam" value="{{categorie.parentCategorieNaam}}" />
+	</div>
+	
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>

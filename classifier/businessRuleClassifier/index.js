@@ -1,12 +1,10 @@
-
-
 function loadBusinessRules() {
 	return require('./businessRules');
 }
 
 function classify(verrichting) {
 	var businessRules = loadBusinessRules();
-	var classification;
+	var classification = "Classification by businss rule failed";
 	businessRules.forEach(function(businessRule) {
 		var attempt = businessRule.execute(verrichting);
 		if(attempt) {
@@ -15,7 +13,6 @@ function classify(verrichting) {
 	});
 	return classification;
 }
-
 
 module.exports = {
 	loadBusinessRules: loadBusinessRules,

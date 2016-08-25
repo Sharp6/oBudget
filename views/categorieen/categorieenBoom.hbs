@@ -1,0 +1,15 @@
+<h2>Categorieën</h2>
+
+<ul>
+	{{#topLevelCategorieen}}
+		<li>
+			{{naam}}
+			<ul>
+				{{#childCategorieen}}
+					<li>{{naam}}</li>
+				{{/childCategorieen}}
+			</ul>
+		</li>
+
+	{{/topLevelCategorieen}}
+</ul>

@@ -1,0 +1,10 @@
+<h2>{{categorie.naam}}</h2>
+
+<p>Onderdeel van {{categorie.parentCategorieNaam}}.</p>
+
+<h3>Onderdelen</h3
+<ul>
+{{#categorie.childCategorieen}}
+	<li>{{naam}}</li>
+{{/categorie.childCategorieen}}
+</ul>

@@ -5,9 +5,12 @@ var bankRepo = function() {
 	var _banken = [];
 
 	function create(data) {
-		var newBank = new Bank(data);
-		_banken.push(newBank);
-		return newBank;
+		return Promise.resolve()
+			.then(function() {
+				var newBank = new Bank(data);
+				_banken.push(newBank);
+				return newBank;
+			});
 	}
 
 	function getAll() {
@@ -58,7 +61,10 @@ var bankRepo = function() {
 	}
 
 	function save(bank) {
-		return bankDA.save(bank);
+		return bankDA.save(bank)
+			.then(function() {
+				return bank;
+			});
 	}
 
 	return {

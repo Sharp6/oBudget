@@ -49,7 +49,8 @@ describe("Workflow for one new file", function() {
 		}
 
 		[
-			{ filename: "argenta.csv"}
+			{ filename: "argenta.csv" },
+			{ filename: "belfius.csv" }
 		].forEach(expectIdentifiedBank);
 	});
 
@@ -67,8 +68,7 @@ describe("Workflow for one new file", function() {
 
 		[
 			{ bank: 'belfius' },
-			{ bank: 'argenta' },
-			{ bank: 'kbc' }
+			{ bank: 'argenta' }
 		].forEach(testCorrectDataPreparer);
 
 	});
@@ -86,7 +86,8 @@ describe("Workflow for one new file", function() {
 		}
 
 		[
-			{ filename: 'argenta.csv' }
+			{ filename: 'argenta.csv' },
+			{ filename: 'belfius.csv' }
 		].forEach(testFileReading);
 		
 	});
@@ -107,7 +108,8 @@ describe("Workflow for one new file", function() {
 		}
 
 		[
-			{ filename: 'argenta.csv' }
+			{ filename: 'argenta.csv' },
+			{ filename: 'belfius.csv' }
 		].forEach(testDataPreparation);
 
 	});
@@ -128,35 +130,53 @@ describe("Workflow for one new file", function() {
 		}
 
 		[
-			{ filename: 'argenta.csv' }
+			{ filename: 'argenta.csv' },
+			{ filename: 'belfius.csv' }
 		].forEach(testDataParsing);
 
 	});
 
 	// tests two separate actions at once, since syntaxFixer modifies the verrichtingData field instead of creating its own field.
 	// Currently fails because verrichtingeRepo adds fields to verrichtingData which it does not expect.
-	describe("maps the data fields to the internal model and fixes the syntax", function() {
+	describe("maps the data fields to the internal model", function() {
 		var assignDataHelpers = require("../fileHandler/dataHelpersAssigner.action");
-		var fixSyntax = require('../fileHandler/syntaxFixer.action');
-
+		
 		function testDataMapping(example) {
 			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
 
 			var data = assignDataHelpers({dataArray: solution.dataArray, bank: solution.bank})
 				.then(function(fileToParse) {
 					return fileToParse.dataMapper(fileToParse);
-				})
-				.then(fixSyntax);
+				});
 			it("has populated the field verrichtingData correctly.", function() {
 				return expect(data).to.eventually.have.property('verrichtingData').that.is.deep.equal(solution.verrichtingData);
 			});
 		}
 
 		[
-			{ filename: 'argenta.csv' }
+			{ filename: 'argenta.csv' },
+			{ filename: 'belfius.csv' }
 		].forEach(testDataMapping);
+	});
 
+	describe("fixes the syntax", function() {
+		var fixSyntax = require('../fileHandler/syntaxFixer.action');
 
+		function testSyntaxFixing(example) {
+			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
+
+			var data = fixSyntax({ verrichtingData: solution.verrichtingData });
+			it("has fixed fields.", function() {
+				return expect(data).to.eventually.have.property('fixedVerrichtingData').that.is.deep.equal(solution.fixedVerrichtingData);
+			});
+
+			it("has converted bedrag to a number.");
+		}
+
+		[
+			{ filename: 'argenta.csv' },
+			{ filename: 'belfius.csv' }
+		].forEach(testSyntaxFixing);
 	});
 
 
@@ -177,12 +197,13 @@ describe("Workflow for one new file", function() {
 			var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
 			removeFields(solution.verrichtingen);
 
-			var data = createVerrichtingen({verrichtingData: solution.verrichtingData})
-				.then(function(fileToParse) {
-					removeFields(fileToParse.verrichtingen);
-					return fileToParse;
-				});
 			it("has something", function() {
+				var data = createVerrichtingen({fixedVerrichtingData: solution.fixedVerrichtingData})
+					.then(function(fileToParse) {
+						removeFields(fileToParse.verrichtingen);
+						return fileToParse;
+					});
+
 				return expect(data).to.eventually.have.property('verrichtingen').that.is.deep.equal(solution.verrichtingen);
 			});
 			

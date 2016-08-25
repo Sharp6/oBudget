@@ -8,7 +8,7 @@ var fixSyntax = require('../fileHandler/syntaxFixer.action');
 var createVerrichtingen = require('../fileHandler/verrichtingenCreator.action');
 
 var fileToParse = {
-	filename: "../testDataFiles/belfius.csv"
+	filename: "../testDataFiles/argenta.csv"
 };
 
 determineBank(fileToParse)

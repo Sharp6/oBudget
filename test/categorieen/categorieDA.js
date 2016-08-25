@@ -26,7 +26,8 @@ describe("The categorieDA", function() {
 	}
 
 	beforeEach(function() {
-		mongoose.connect('mongodb://localhost/obudgetTest');
+		//mongoose.connect('mongodb://localhost/obudgetTest');
+		mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
 		categorieDA.removeAll();
 	});
 

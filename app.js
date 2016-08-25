@@ -13,7 +13,8 @@ var api = require('./routes/api');
 
 var mongoose = require('mongoose');
 if(process.env.NODE_ENV === "test") {
-    mongoose.connect('mongodb://localhost/obudgetTest');
+    mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
+    //mongoose.connect('mongodb://localhost/obudgetTest');
 }
 if(process.env.NODE_ENV === "dev") {
     mongoose.connect('mongodb://localhost/obudgetDev');

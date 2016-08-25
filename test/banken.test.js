@@ -14,7 +14,8 @@ describe("Banken", function() {
 		var bankDA = require('../banken/bank.da.server');
 
 		beforeEach(function() {
-			mongoose.connect('mongodb://localhost/obudgetTest');
+			mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
+			//mongoose.connect('mongodb://localhost/obudgetTest');
 			bankDA.removeAll();
 		});
 

@@ -49,7 +49,7 @@ describe("The saldo checker flow", function() {
 	beforeEach(function() {
 		solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
 
-		mongoose.connect('mongodb://localhost/obudgetTest', function() {
+		mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest', function() {
 			verrichtingDA.removeAll();
 			saldoDA.removeAll();
 			bankDA.removeAll();

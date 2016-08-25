@@ -1,0 +1,31 @@
+<h2>Saldi</h2>
+
+<table class="table">
+<thead>
+<tr>
+	<th>ID</th>
+	<th>Details</th>
+	<th>Edit</th>
+</tr>
+</thead>
+
+<tbody>
+{{#saldi}}
+	<tr>
+		<td>{{saldoId}}</td>
+		<td>
+			<a href="/saldo/{{saldoId}}">
+				link
+			</a>
+		</td>
+		<td>
+			<a href="/editSaldo/{{saldoId}}">
+				link
+			</a>
+		</td>
+	</tr>
+{{/saldi}}
+</tbody>
+</table>
+
+<p><a href="/createSaldo">+ Nieuw saldo</a></p>

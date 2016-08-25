@@ -49,7 +49,6 @@ describe("creates a new Verrichting", function() {
 
 			return expect(data).to.eventually.have.property('verrichtingen').that.is.deep.equal(solution.verrichtingen);
 		});
-		
 	}
 
 	[

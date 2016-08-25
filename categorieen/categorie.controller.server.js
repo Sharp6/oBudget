@@ -2,7 +2,7 @@ var categorieRepo = require('./categorie.repository.server');
 
 var categorieCtrl = function() {
 
-	// API 
+	// API ===============================================================
 	var getAll = function(req,res) {
 		return categorieRepo.getAll()
 			.then(function(categorieen) {
@@ -37,7 +37,7 @@ var categorieCtrl = function() {
 			});
 	};
 
-	// Renderers
+	// Renderers ==========================================================
 	var renderAll = function(req,res) {
 		return categorieRepo.getAll()
 			.then(function(categorieen) {

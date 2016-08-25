@@ -17,7 +17,8 @@ if(process.env.NODE_ENV === "test") {
     //mongoose.connect('mongodb://localhost/obudgetTest');
 }
 if(process.env.NODE_ENV === "dev") {
-    mongoose.connect('mongodb://localhost/obudgetDev');
+    //mongoose.connect('mongodb://localhost/obudgetDev');
+    mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
 }
 
 var app = express();
@@ -50,9 +51,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-require('./verrichtingen').routes(app);
+//require('./verrichtingen').routes(app);
+app.use(require('./verrichtingen/verrichting.routes.server'));
 app.use(require('./banken/bank.routes.server'));
 app.use(require('./categorieen/categorie.routes.server'));
+app.use(require('./saldi/saldo.routes.server'));
 
 /*
 app.use('/', routes);

@@ -1,0 +1,27 @@
+<h2>Verrichtingen</h2>
+
+<table class="table">
+<thead>
+<tr>
+	<th>ID</th>
+	<th>bedrag</th>
+	<th>Details</th>
+</tr>
+</thead>
+
+<tbody>
+{{#verrichtingen}}
+	<tr>
+		<td>{{verrichtingId}}</td>
+		<td>
+			{{bedrag}}
+		</td>
+		<td>
+			<a href="/verrichting/{{verrichtingId}}">
+				link
+			</a>
+		</td>
+	</tr>
+{{/verrichtingen}}
+</tbody>
+</table>

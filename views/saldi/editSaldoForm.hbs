@@ -1,0 +1,17 @@
+<h2>{{saldo.saldoId}}</h2>
+
+<form action="/editSaldo/{{saldo.saldoId}}" method="POST">
+	<div class="form-group">
+		<label for="bedrag">Bedrag:</label>
+		<input type="text" name="bedrag" id="bedrag" class="form-control" placeholder="bedrag" value="{{saldo.bedrag}}" />
+
+		<label for="bankNaam">Bank:</label>
+		<input type="text" name="bankNaam" id="bankNaam" class="form-control" placeholder="banknaam" value="{{saldo.bankNaam}}" />
+
+		<label for="laatsteVerrichtingId">ID laatste verrichting:</label>
+		<input type="text" name="laatsteVerrichtingId" id="laatsteVerrichtingId" class="form-control" placeholder="laatsteVerrichtingId" value="{{saldo.laatsteVerrichtingId}}" />
+
+	</div>
+	
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>

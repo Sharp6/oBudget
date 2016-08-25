@@ -1,15 +1,16 @@
+var router = require('express').Router();
 var verrichtingCtrl = require('./verrichting.controller.server');
 
-function verrichtingRoutes(app) {
-	app.get('/verrichtingen', verrichtingCtrl.getVerrichtingen);
-	
-	/*
-	app.get('/songs/:id', passport.authenticationMiddleware(), songsCtrl.getSong);
-	app.post('/songs/:id', passport.authenticationMiddleware(), songsCtrl.updateSong);
-	
-	app.get('/addSong', passport.authenticationMiddleware(), songsCtrl.showNewSongForm);
-	app.post('/addSong', passport.authenticationMiddleware(), songsCtrl.addNewSong);
-	*/
-}
+// API ==============================================
+// (= get all)
+router.get('/api/verrichtingen', verrichtingCtrl.getAll);
 
-module.exports = verrichtingRoutes;
+// (=get one)
+router.get('/api/verrichting/:id', verrichtingCtrl.get);
+
+// RENDERERS ========================================
+router.get('/verrichtingen', verrichtingCtrl.renderAll);
+
+router.get('/verrichting/:id', verrichtingCtrl.renderVerrichting);
+
+module.exports = router;

@@ -23,7 +23,7 @@ describe.only("saves the verrichtingen to a db", function() {
 
 	
 	afterEach(function() {
-		verrichtingDA.removeAll();
+		//verrichtingDA.removeAll();
 		mongoose.connection.close();
 	});
 	

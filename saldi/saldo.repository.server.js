@@ -6,13 +6,16 @@ var saldoRepo = function() {
 	var _saldi = [];
 
 	function create(data) {
-		var augmentedData = {};
-    for (var dataAttribute in data) { augmentedData[dataAttribute] = data[dataAttribute]; }
-		augmentedData.saldoId = uuid.v4();
+		return Promise.resolve()
+			.then(function() {
+				var augmentedData = {};
+		    	for (var dataAttribute in data) { augmentedData[dataAttribute] = data[dataAttribute]; }
+				augmentedData.saldoId = uuid.v4();
 
-		var newSaldo = new Saldo(augmentedData);
-		_saldi.push(newSaldo);
-		return newSaldo;
+				var newSaldo = new Saldo(augmentedData);
+				_saldi.push(newSaldo);
+				return newSaldo;
+			});
 	}
 
 	function getAll() {
@@ -63,7 +66,10 @@ var saldoRepo = function() {
 	}
 
 	function save(saldo) {
-		return saldoDA.save(saldo);
+		return saldoDA.save(saldo)
+			.then(function() {
+				return saldo;
+			});
 	}
 
 	return {

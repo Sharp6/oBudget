@@ -1,0 +1,54 @@
+<h2>Verrichting {{verrichting.verrichtingId}}</h2>
+
+<table>
+	<tr>
+		<th>Bedrag</th>
+		<td>{{verrichting.bedrag}} {{verrichting.valuta}}</td>
+	</tr>
+	<tr>
+		<th>Datum</th>
+		<td>{{verrichting.datum}}</td>
+	</tr>
+	<tr>
+		<th>Status</th>
+		<td>{{verrichting.status}}</td>
+	</tr>
+	<tr>
+		<th>Tegenpartij</th>
+		<td>{{verrichting.naamTegenpartij}} ({{verrichting.rekeningTegenpartij}})</td>
+	</tr>
+	
+
+	<tr>
+		<th>Type</th>
+		<td>{{verrichting.type}}</td>
+	</tr>
+	<tr>
+		<th>Mededeling</th>
+		<td>{{verrichting.mededeling}}</td>
+	</tr>
+	<tr>
+		<th>Bank reference</th>
+		<td>{{verrichting.bankRef}}</td>
+	</tr>
+	<tr>
+		<th>Info</th>
+		<td>{{verrichting.info}}</td>
+	</tr>
+	<tr>
+		<th>Bank</th>
+		<td><a href="/bank/{{verrichting.bank}}">{{verrichting.bank}}</a></td>
+	</tr>
+	<tr>
+		<th>Checksum</th>
+		<td>{{verrichting.csum}}</td>
+	</tr>
+	<tr>
+		<th>Valuta</th>
+		<td>{{verrichting.valuta}}</td>
+	</tr>
+	<tr>
+		<th>Rekening tegenpartij</th>
+		<td>{{verrichting.rekeningTegenpartij}}</td>
+	</tr>
+</table>

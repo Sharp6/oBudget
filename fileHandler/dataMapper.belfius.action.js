@@ -9,6 +9,7 @@ function mapBelfiusRecord(data) {
 	var augmentedData = {};
 	for (var dataAttribute in data) { augmentedData[dataAttribute] = data[dataAttribute]; }
 
+	augmentedData.bank = 'belfius';
 	augmentedData.info = " - " + data.rekeningTegenpartij + " - " + data.naamTegenpartij + " - " + data.mededeling;
 	return augmentedData;
 }

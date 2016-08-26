@@ -61,7 +61,7 @@ var saldoCheckerCtrl = function() {
 		});
 	}
 
-	function checkSaldoFlow(saldoId) {
+	function _checkSaldoFlow(saldoId) {
 		var saldoCheck = {
 			saldoId: saldoId
 		};
@@ -73,7 +73,7 @@ var saldoCheckerCtrl = function() {
 	}
 	
 	function checkSaldo(req,res) {
-		_checkSaldoFlow(req.body.saldoId)
+		_checkSaldoFlow(req.params.saldoId)
 			.then(function(saldoCheck) {
 				res.send(saldoCheck);
 			})
@@ -82,9 +82,35 @@ var saldoCheckerCtrl = function() {
 			});
 	}
 
+	function renderSaldoFlow(req,res) {
+		_checkSaldoFlow(req.params.saldoId)
+			.then(function(saldoCheck) {
+				res.render('saldoChecker/check', {
+					saldoCheck: saldoCheck
+				});
+			})
+			.catch(function(err) {
+				res.status(500).send(err);
+			});
+	}
+
+	function renderSaldoCheckerMain(req,res) {
+		saldoRepo.getAll()
+			.then(function(saldi) {
+				res.render('saldoChecker/main', {
+					saldi: saldi
+				});
+			})
+			.catch(function(err) {
+				res.status(500).send(err);
+			});
+	}
+
 	return {
 		checkSaldo: checkSaldo,
-		checkSaldoFlow: checkSaldoFlow
+		checkSaldoFlow: _checkSaldoFlow,
+		renderSaldoFlow: renderSaldoFlow,
+		renderSaldoCheckerMain: renderSaldoCheckerMain
 	};
 };
 

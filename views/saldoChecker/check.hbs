@@ -1,0 +1,10 @@
+<h2>SaldoCheck</h2>
+
+<p>Results for saldo with id {{saldoCheck.saldo.saldoId}}: {{saldoCheck.checkResult}}</p>
+
+<h3>Verrichtingen</h3>
+<ul>
+{{#saldoCheck.verrichtingen}}
+<li>{{verrichtingId}}: {{datum}} - {{bedrag}}{{valuta}}</li>
+{{/saldoCheck.verrichtingen}}
+</ul>

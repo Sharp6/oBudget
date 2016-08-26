@@ -57,6 +57,8 @@ app.use(require('./banken/bank.routes.server'));
 app.use(require('./categorieen/categorie.routes.server'));
 app.use(require('./saldi/saldo.routes.server'));
 
+app.use(require('./saldoChecker/saldoChecker.routes.server'));
+
 /*
 app.use('/', routes);
 app.use('/users', users);

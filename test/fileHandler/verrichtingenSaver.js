@@ -18,7 +18,7 @@ describe.only("saves the verrichtingen to a db", function() {
 	beforeEach(function() {
 		mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
 		//mongoose.connect('mongodb://localhost/obudgetTest');
-		verrichtingDA.removeAll();
+		//verrichtingDA.removeAll();
 	});
 
 	

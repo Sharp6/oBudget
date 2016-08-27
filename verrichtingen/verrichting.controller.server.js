@@ -90,13 +90,18 @@ var verrichtingCtrl = function() {
 			});
 	};
 
+	var renderHelpers = function(req,res) {
+		res.render('verrichtingen/helpers');
+	};
+
 	return {
 		getAll: getAll,
 		get: get,
 		renderAll: renderAll,
 		renderVerrichting: renderVerrichting,
 		checkDuplicates: checkDuplicates,
-		checkAllDuplicates: checkAllDuplicates
+		checkAllDuplicates: checkAllDuplicates,
+		renderHelpers: renderHelpers
 	};
 };
 

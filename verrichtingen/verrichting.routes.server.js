@@ -15,4 +15,6 @@ router.get('/verrichtingen', verrichtingCtrl.renderAll);
 
 router.get('/verrichting/:id', verrichtingCtrl.renderVerrichting);
 
+router.get('/verrichtingHelpers', verrichtingCtrl.renderHelpers);
+
 module.exports = router;

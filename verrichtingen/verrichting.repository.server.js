@@ -97,7 +97,7 @@ var verrichtingRepo = function() {
 			} else {
 				// We have no duplicates in the checksum
 				return new Promise(function(resolve, reject) {
-					resolve();
+					resolve("No duplicates for this checksum.");
 				});
 			}
 		});

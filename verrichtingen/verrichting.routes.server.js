@@ -8,6 +8,8 @@ router.get('/api/verrichtingen', verrichtingCtrl.getAll);
 // (=get one)
 router.get('/api/verrichting/:id', verrichtingCtrl.get);
 
+router.get('/api/checkDuplicateVerrichtingen/:csum', verrichtingCtrl.checkDuplicates);
+router.get('/api/checkAllDuplicateVerrichtingen', verrichtingCtrl.checkAllDuplicates);
 // RENDERERS ========================================
 router.get('/verrichtingen', verrichtingCtrl.renderAll);
 

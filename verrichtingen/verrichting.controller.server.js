@@ -42,6 +42,29 @@ var verrichtingCtrl = function() {
 			});
 	};
 
+	var checkDuplicates = function(req,res) {
+		return verrichtingRepo.handleDuplicates(req.params.csum)
+			.then(function(message) {
+				res.send(message);
+			});
+	};
+
+	var checkAllDuplicates = function(req,res) {
+		return verrichtingRepo.getAll()
+			.then(function(verrichtingen) {
+				var promise = Promise.resolve();
+				verrichtingen.forEach(function(verrichting) {
+					promise = promise.then(function() {
+						return verrichtingRepo.handleDuplicates(verrichting.csum);
+					});
+				});
+				return promise;
+			})
+			.then(function() {
+				res.send("All verrichtingen checked for duplicates.");
+			});
+	};
+
 	// Renderers ==========================================================
 	var renderAll = function(req,res) {
 		return verrichtingRepo.getAll()
@@ -70,8 +93,10 @@ var verrichtingCtrl = function() {
 	return {
 		getAll: getAll,
 		get: get,
-		renderAll: renderAll, 
-		renderVerrichting: renderVerrichting
+		renderAll: renderAll,
+		renderVerrichting: renderVerrichting,
+		checkDuplicates: checkDuplicates,
+		checkAllDuplicates: checkAllDuplicates
 	};
 };
 

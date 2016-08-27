@@ -14,6 +14,7 @@
     "csv-parse": "^1.1.7",
     "debug": "~2.0.0",
     "express": "~4.9.0",
+    "express-fileupload": "0.0.5",
     "express-handlebars": "^3.0.0",
     "hjs": "~0.0.6",
     "moment": "^2.14.1",

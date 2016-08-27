@@ -9,7 +9,7 @@ function loadSolution(filename) {
 	return JSON.parse(fs.readFileSync(filename).toString());
 }
 
-describe.only("saves the verrichtingen to a db", function() {
+describe("saves the verrichtingen to a db", function() {
 	var saveVerrichtingen = require('../../fileHandler/verrichtingenSaver.action');
 
 	var mongoose = require('mongoose');
@@ -23,7 +23,7 @@ describe.only("saves the verrichtingen to a db", function() {
 
 	
 	afterEach(function() {
-		//verrichtingDA.removeAll();
+		verrichtingDA.removeAll();
 		mongoose.connection.close();
 	});
 	

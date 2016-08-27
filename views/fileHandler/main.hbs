@@ -1,0 +1,16 @@
+<h2>FileHandler</h2>
+
+<p>
+Upload the file to process:
+</p>
+
+<form ref='uploadForm' 
+	id='uploadForm' 
+	action='/fileHandler' 
+	method='post' 
+	encType="multipart/form-data">
+	<label class="btn btn-default btn-file">
+	    Browse <input type="file" id="fileToHandle" name="fileToHandle" >
+	</label>
+	<input type='submit' value='Handle' class="btn btn-success" />
+</form>

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var chai = require("chai"), expect = chai.expect;
 chai.use(require('chai-as-promised'));
 chai.use(require('sinon-chai'));
@@ -16,9 +18,8 @@ describe("saves the verrichtingen to a db", function() {
 	var verrichtingDA = require('../../verrichtingen/verrichting.da.server');
 
 	beforeEach(function() {
-		mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
-		//mongoose.connect('mongodb://localhost/obudgetTest');
-		//verrichtingDA.removeAll();
+		mongoose.connect(process.env.DB_HOST_TEST);
+		verrichtingDA.removeAll();
 	});
 
 	

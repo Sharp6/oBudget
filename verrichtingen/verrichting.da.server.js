@@ -15,7 +15,8 @@ var VerrichtingDA = function() {
 		info: String,
 		bank: String,
 		status: String,
-		csum: String
+		csum: String,
+		categorie: String
 	});
 
 	var VerrichtingModel = mongoose.model('Verrichting', verrichtingSchema);
@@ -179,6 +180,7 @@ var VerrichtingDA = function() {
 				verrichtingModel.bank = verrichting.bank;
 				verrichtingModel.status = verrichting.status;
 				verrichtingModel.csum = verrichting.csum;
+				verrichtingModel.categorie = verrichting.categorie;
 
 				verrichtingModel.save(function (err) {
 					if (err) {

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var chai = require("chai"), expect = chai.expect;
 chai.use(require('chai-as-promised'));
 chai.use(require('sinon-chai'));
@@ -21,8 +23,7 @@ describe("The verrichting repository", function() {
 	var solution;
 
 	beforeEach(function() {
-		mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
-		//mongoose.connect('mongodb://localhost/obudgetTest');
+		mongoose.connect(process.env.DB_HOST_TEST);
 		verrichtingDA.removeAll();
 		solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
 	});

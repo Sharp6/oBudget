@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var chai = require("chai"), expect = chai.expect;
 chai.use(require('chai-as-promised'));
 chai.use(require('sinon-chai'));
@@ -46,7 +48,7 @@ describe("The saldo checker flow", function() {
 
 	beforeEach(function(done) {
 		solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
-		mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest', function() {
+		mongoose.connect(process.env.DB_HOST_TEST, function() {
 			Promise.all([
 				verrichtingDA.removeAll(),
 				saldoDA.removeAll(),

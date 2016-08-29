@@ -13,6 +13,8 @@ var Verrichting = function(data) {
 	this.mededeling = data.mededeling || '';
 	this.info = data.info || '';
 	this.bank = data.bank || '';
+
+	this.categoryByBusinessRuleClassifier = data.categoryByBusinessRuleClassifier || '';
 };
 
 module.exports = Verrichting;

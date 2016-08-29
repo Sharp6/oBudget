@@ -1,11 +1,21 @@
 var Verrichting = require('./verrichting.model.server');
 var verrichtingDA = require('./verrichting.da.server');
+
+var classifiers = require('../classifier');
+
 var uuid = require('uuid');
 var checksum = require('checksum');
 var moment = require('moment-timezone');
 
 var verrichtingRepo = function() {
 	var _verrichtingen = [];
+
+	function _instantiateVerrichting(data) {
+		var verrichting = new Verrichting(data);
+		verrichting.categoryByBusinessRuleClassifier = classifiers.businessRuleClassifier.classify(verrichting);
+		_verrichtingen.push(verrichting);
+		return verrichting;
+	}
 
 	function create(data) {
 		var augmentedData = {};
@@ -18,8 +28,7 @@ var verrichtingRepo = function() {
 		// add timestamp?
 
 		var newVerrichting = new Verrichting(augmentedData);
-		_verrichtingen.push(newVerrichting);
-		
+		//var newVerrichting = _instantiateVerrichting(augmentedData);
 		return newVerrichting;
 	}
 
@@ -44,8 +53,7 @@ var verrichtingRepo = function() {
 				// retrieve from db
 				verrichtingDA.get(verrichtingId)
 					.then(function(verrichtingData) {
-						var newVerrichting = new Verrichting(verrichtingData);
-						_verrichtingen.push(newVerrichting);
+						var newVerrichting = _instantiateVerrichting(verrichtingData);
 						resolve(newVerrichting);
 					})
 					.catch(function(err) {
@@ -63,8 +71,7 @@ var verrichtingRepo = function() {
 			if(verrichting) {
 				resolve(verrichting);
 			} else {
-				var newVerrichting = new Verrichting(verrichtingData);
-				_verrichtingen.push(newVerrichting);
+				var newVerrichting = _instantiateVerrichting(verrichtingData);
 				resolve(newVerrichting);
 			}
 		});
@@ -78,7 +85,10 @@ var verrichtingRepo = function() {
 	}
 
 	function save(verrichting) {
-		return verrichtingDA.save(verrichting);
+		return verrichtingDA.save(verrichting)
+			.then(function() {
+				return verrichting;
+			});
 	}
 
 	// very ugly, refactor!

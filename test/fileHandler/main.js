@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var chai = require("chai"), expect = chai.expect;
 chai.use(require('chai-as-promised'));
 chai.use(require('sinon-chai'));
@@ -15,8 +17,7 @@ describe("The whole fileHandler shabang", function() {
 	var verrichtingDA = require('../../verrichtingen/verrichting.da.server');
 
 	beforeEach(function(done) {
-		mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
-		//mongoose.connect('mongodb://localhost/obudgetTest');
+		mongoose.connect(process.env.DB_HOST_TEST);
 		verrichtingDA.removeAll().then(function() { done(); });
 	});
 	
@@ -30,7 +31,10 @@ describe("The whole fileHandler shabang", function() {
 	it("should result in saved verrichtingen", function() {
 		var data = fileHandler.handleFile("./testDataFiles/argenta.csv")
 			.then(function() {
-				return verrichtingDA.getAll();
+				return verrichtingDA.getAll()
+					.then(function(result) {
+						return result;
+					});
 			});
 
 		return expect(data).to.eventually.have.length(3);

@@ -1,5 +1,3 @@
 module.exports = {
-	classifiers: [
-		require('./businessRuleClassifier')
-	]
+	businessRuleClassifier: require('./businessRuleClassifier')
 };

@@ -2,6 +2,10 @@
 
 <table>
 	<tr>
+		<th>Categorie</th>
+		<td>{{verrichting.categorie}}</td>
+	</tr>
+	<tr>
 		<th>Bedrag</th>
 		<td>{{verrichting.bedrag}} {{verrichting.valuta}}</td>
 	</tr>
@@ -17,8 +21,6 @@
 		<th>Tegenpartij</th>
 		<td>{{verrichting.naamTegenpartij}} ({{verrichting.rekeningTegenpartij}})</td>
 	</tr>
-	
-
 	<tr>
 		<th>Type</th>
 		<td>{{verrichting.type}}</td>
@@ -51,8 +53,18 @@
 		<th>Rekening tegenpartij</th>
 		<td>{{verrichting.rekeningTegenpartij}}</td>
 	</tr>
+
 </table>
 
 <p>
 <a href="/api/checkDuplicateVerrichtingen/{{verrichting.csum}}">Kijkt duplicates na</a>
+</p>
+
+<p>
+	Categorie bepaald door business rule: {{verrichting.categoryByBusinessRuleClassifier}}
+	<form action="/verrichting/{{verrichting.verrichtingId}}" method="POST">
+		<label for="categorie">Categorie:</label>
+		<input type="text" name="categorie" id="categorie" class="form-control" placeholder="categorie" value="{{verrichting.categoryByBusinessRuleClassifier}}" />
+		<input type="submit" class="btn btn-default" value="submit" /> 
+	</form>
 </p>

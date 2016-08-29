@@ -1,9 +1,6 @@
 var verrichtingRepo = require('./verrichting.repository.server');
 
 var verrichtingCtrl = function() {
-	
-	
-
 	// API ===============================================================
 	function getAll(req,res) {
 		return verrichtingRepo.getAll()
@@ -69,6 +66,7 @@ var verrichtingCtrl = function() {
 	var renderAll = function(req,res) {
 		return verrichtingRepo.getAll()
 			.then(function(verrichtingen) {
+				console.log("VERRICHTINGENCTRL: verrichtingen", verrichtingen);
 				return res.render('verrichtingen/verrichtingen', {
 					verrichtingen: verrichtingen
 				});
@@ -94,6 +92,23 @@ var verrichtingCtrl = function() {
 		res.render('verrichtingen/helpers');
 	};
 
+	var editFormSubmit = function(req,res) {
+		return verrichtingRepo.getVerrichtingById(req.params.id)
+			.then(function(verrichting) {
+				verrichting.categorie = req.body.categorie;
+				return verrichting;
+			})
+			.then(verrichtingRepo.save)
+			.then(function(verrichting) {
+				res.render('verrichtingen/verrichting', {
+					verrichting: verrichting
+				});
+			})
+			.catch(function(err) {
+				res.status(500).send(err);
+			});
+	};
+
 	return {
 		getAll: getAll,
 		get: get,
@@ -101,7 +116,8 @@ var verrichtingCtrl = function() {
 		renderVerrichting: renderVerrichting,
 		checkDuplicates: checkDuplicates,
 		checkAllDuplicates: checkAllDuplicates,
-		renderHelpers: renderHelpers
+		renderHelpers: renderHelpers,
+		editFormSubmit: editFormSubmit
 	};
 };
 

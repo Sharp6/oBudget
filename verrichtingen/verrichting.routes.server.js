@@ -17,4 +17,6 @@ router.get('/verrichting/:id', verrichtingCtrl.renderVerrichting);
 
 router.get('/verrichtingHelpers', verrichtingCtrl.renderHelpers);
 
+router.post('/verrichting/:id', verrichtingCtrl.editFormSubmit);
+
 module.exports = router;

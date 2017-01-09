@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 var CategorieDA = function() {
 	var categorieSchema = new mongoose.Schema({
 		naam: String,
-		parentCategorieNaam: String
+		parentCategorieNaam: String,
+		kleur: String
 	});
 
 	var CategorieModel = mongoose.model('Categorie', categorieSchema);
@@ -73,6 +74,7 @@ var CategorieDA = function() {
 			return new Promise(function(resolve,reject) {
 				categorieModel.naam = categorie.naam;
 				categorieModel.parentCategorieNaam = categorie.parentCategorieNaam;
+				categorieModel.kleur = categorie.kleur;
 				
 				categorieModel.save(function (err) {
 					if (err) {

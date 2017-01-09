@@ -33,6 +33,13 @@ app.engine('.hbs', exphbs({
         return options.fn(this);
       }
       return options.inverse(this);
+    },
+    isSelected: function(option, value){
+      if (option === value) {
+          return ' selected';
+      } else {
+          return '';
+      }
     }
   }
 }));
@@ -55,6 +62,7 @@ app.use(require('./saldi/saldo.routes.server'));
 
 app.use(require('./saldoChecker/saldoChecker.routes.server'));
 app.use(require('./fileHandler/fileHandler.routes.server'));
+app.use(require('./bulkClassifier/bulkClassifier.routes.server'));
 
 /*
 app.use('/', routes);

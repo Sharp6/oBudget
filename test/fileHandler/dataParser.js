@@ -10,7 +10,7 @@ function loadSolution(filename) {
 }
 
 describe("parses the data correctly", function() {
-	var parseData = require('../../fileHandler/dataParser.action');
+	var parseData = require('../../fileHandler/dataParser.csv.action');
 
 	function testDataParsing(example) {
 		var solution = loadSolution('./testDataFilesSolutions/' + example.filename + ".solution.json");
@@ -27,7 +27,8 @@ describe("parses the data correctly", function() {
 
 	[
 		{ filename: 'argenta.csv' },
-		{ filename: 'belfius.csv' }
+		{ filename: 'belfius.csv' },
+		{ filename: 'kbc.csv' }
 	].forEach(testDataParsing);
 
 });

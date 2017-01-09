@@ -7,6 +7,11 @@
 			<ul>
 				{{#childCategorieen}}
 					<li>{{naam}}</li>
+					<ul>
+						{{#childCategorieen}}
+							<li>{{naam}}</li>
+						{{/childCategorieen}}
+					</ul>
 				{{/childCategorieen}}
 			</ul>
 		</li>

@@ -103,4 +103,16 @@ describe("The verrichting repository", function() {
 		});
 	});
 
+	describe("using search", function() {
+		it("should return the correct verrichtingen", function() {
+			var data = saveVerrichtingen({ verrichtingen: solution.verrichtingen })
+				.then(verrichtingRepo.getAll)
+				.then(function(verrichtingen) {
+					return verrichtingRepo.search({ bank:"argenta" });
+				});
+
+			return expect(data).to.eventually.have.property("verrichtingen").with.length(3);
+		});
+	});
+
 });

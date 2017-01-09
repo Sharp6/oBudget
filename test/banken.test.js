@@ -21,8 +21,10 @@ describe("Banken", function() {
 		});
 
 		afterEach(function(done) {
-			bankDA.removeAll();
-			mongoose.connection.close(done);
+			bankDA.removeAll()
+				.then(function() {
+					mongoose.connection.close(done);
+				});
 		});
 
 		it('should save a bank', function() {

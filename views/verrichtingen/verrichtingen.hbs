@@ -1,10 +1,84 @@
 <h2>Verrichtingen</h2>
 
+<h3>Filters</h3>
+<form action="/searchVerrichtingen" method="GET">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<label for="minBedrag">Minimum bedrag</label>
+				<input type="text" name="minBedrag" id="minBedrag" class="form-control" placeholder="Minimum bedrag" value="{{searchParams.minBedrag}}" />
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group">
+				<label for="maxBedrag">Maximum bedrag</label>
+				<input type="text" name="maxBedrag" id="maxBedrag" class="form-control" placeholder="Maximum bedrag" value="{{searchParams.maxBedrag}}"/>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="beginDatum">Begindatum</label>
+				<input type="text" name="beginDatum" id="beginDatum" class="form-control" placeholder="DD-MM-YYYY" value="{{searchParams.beginDatumDisplay}}" />
+			</div>
+		</div>
+			
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="periodiciteit">Periodiciteit</label>
+				<input type="text" name="periodiciteit" id="periodiciteit" class="form-control" placeholder="Periodiciteit" value="{{searchParams.periodiciteit}}"/>
+			</div>
+		</div>
+
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="eindDatum">Einddatum</label>
+				<input type="text" name="eindDatum" id="eindDatum" class="form-control" placeholder="DD-MM-YYYY" value="{{searchParams.eindDatumDisplay}}" />
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<label for="bank">Bank</label>
+				<input type="text" name="bank" id="bank" class="form-control" placeholder="Bank" value="{{searchParams.bank}}"/>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="form-group">
+				<label for="categorie">Categorie</label>
+				<input type="text" name="categorie" id="categorie" class="form-control" placeholder="Categorie" value="{{searchParams.categorie}}"/>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div class="form-group">
+				<label for="sortField">Sortering:</label>
+				<select class="form-control" name="sortField" id="sortField">
+					{{#each sorters}}
+						<option value="{{sorterValue}}" {{isSelected sorterValue ../searchParams.sortField}}>{{sorterLabel}}</option>
+					{{/each}}
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<button type="submit" class="btn btn-success">Filter</button>
+</form>
+
 <table class="table">
 <thead>
 <tr>
 	<th>ID</th>
-	<th>bedrag</th>
+	<th>Bedrag</th>
+	<th>Datum</th>
+	<th>Categorie</th>
 	<th>Details</th>
 </tr>
 </thead>
@@ -15,6 +89,12 @@
 		<td>{{verrichtingId}}</td>
 		<td>
 			{{bedrag}}
+		</td>
+		<td>
+			{{datumDisplay}}
+		</td>
+		<td>
+			{{categorie}}
 		</td>
 		<td>
 			<a href="/verrichting/{{verrichtingId}}">

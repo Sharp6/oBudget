@@ -23,6 +23,7 @@ describe("reads the file correctly", function() {
 
 	[
 		{ filename: 'argenta.csv' },
-		{ filename: 'belfius.csv' }
+		{ filename: 'belfius.csv' },
+		{ filename: 'kbc.csv' }
 	].forEach(testFileReading);
 });

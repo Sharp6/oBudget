@@ -26,6 +26,7 @@ describe("maps the data fields to the internal model", function() {
 
 	[
 		{ filename: 'argenta.csv' },
-		{ filename: 'belfius.csv' }
+		{ filename: 'belfius.csv' },
+		{ filename: 'kbc.csv' }
 	].forEach(testDataMapping);
 });

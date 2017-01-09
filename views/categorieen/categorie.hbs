@@ -8,3 +8,10 @@
 	<li>{{naam}}</li>
 {{/categorie.childCategorieen}}
 </ul>
+
+<h2>Verrichtingen</h2>
+<ul>
+{{#verrichtingen}}
+	<li>{{bedrag}}, {{datumDisplay}}, <a href="/verrichting/{{verrichtingId}}">Details</a></li> 
+{{/verrichtingen}}
+</ul>

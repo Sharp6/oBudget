@@ -8,7 +8,7 @@ var categorieRepo = function() {
 		return Promise.resolve()
 			.then(function() {
 				var newCategorie = new Categorie(data);
-				_categorieen.push(newCategorie);
+				//_categorieen.push(newCategorie);
 				return newCategorie;
 			});
 	}

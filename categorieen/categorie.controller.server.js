@@ -1,5 +1,5 @@
 var categorieRepo = require('./categorie.repository.server');
-
+var verrichtingRepo = require('../verrichtingen/verrichting.repository.server');
 var categorieCtrl = function() {
 
 	// API ===============================================================
@@ -67,10 +67,14 @@ var categorieCtrl = function() {
 	};
 
 	var renderCategorie = function(req,res) {
-		return categorieRepo.getCategorieByNaam(req.params.id)
-			.then(function(categorie) {
+		return Promise.all([
+			categorieRepo.getCategorieByNaam(req.params.id),
+			verrichtingRepo.findVerrichtingenWithCategorie(req.params.id)
+		])
+			.then(function(results) {
 				res.render('categorieen/categorie', {
-					categorie: categorie
+					categorie: results[0],
+					verrichtingen: results[1]
 				});
 			})
 			.catch(function(err) {

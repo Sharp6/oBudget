@@ -16,14 +16,17 @@ var VerrichtingDA = function() {
 		bank: String,
 		status: String,
 		csum: String,
-		categorie: String
+		categorie: String,
+		datumDisplay: String,
+		periodiciteit: String,
+		manualLabel: String
 	});
 
 	var VerrichtingModel = mongoose.model('Verrichting', verrichtingSchema);
 
 	function getAll() {
 		return new Promise(function(resolve,reject) {
-			VerrichtingModel.find().exec(function(err,doc) {
+			VerrichtingModel.find().sort({datum: 'desc'}).exec(function(err,doc) {
 				if(err) {
 					reject(err);
 				} else {
@@ -75,6 +78,7 @@ var VerrichtingDA = function() {
 	}
 
 	function search(queryParams) {
+		console.log("VERRICHTINGDA: executing search for", queryParams);
 		return new Promise(function(resolve,reject) {
 				var queryCriteria = [];
 				var options = {};
@@ -94,7 +98,13 @@ var VerrichtingDA = function() {
 					queryCriteria.push({mededeling: queryParams.mededeling});
 				}
 				if(queryParams.bedrag && queryParams.bedrag !== "undefined") {
-					queryCriteria.push({datum: queryParams.bedrag});
+					queryCriteria.push({bedrag: queryParams.bedrag});
+				}
+				if(queryParams.minBedrag && queryParams.minBedrag !== "undefined") {
+					queryCriteria.push({bedrag: {$gte:queryParams.minBedrag}});
+				}
+				if(queryParams.maxBedrag && queryParams.maxBedrag !== "undefined") {
+					queryCriteria.push({bedrag: {$lte:queryParams.maxBedrag}});
 				}
 				if(queryParams.bank && queryParams.bank !== "undefined") {
 					queryCriteria.push({bank: {$eq:queryParams.bank}});
@@ -105,18 +115,24 @@ var VerrichtingDA = function() {
 				if(queryParams.status && queryParams.status !== "undefined") {
 					queryCriteria.push({status: {$eq:queryParams.status}});
 				}
-				if(queryParams.categorieId && queryParams.categorieId !== "undefined") {
-					queryCriteria.push({categorie: queryParams.categorieId});
+				if(queryParams.categorie && queryParams.categorie !== "undefined") {
+					queryCriteria.push({categorie: queryParams.categorie});
 				}
 				if(queryParams.businessRuleClassification && queryParams.businessRuleClassification !== "false") {
 					queryCriteria.push({categorieGuessedByBusinessRule: {$exists:true} });
+				}
+				if(queryParams.periodiciteit && queryParams.periodiciteit !== "undefined") {
+					queryCriteria.push({periodiciteit: queryParams.periodiciteit });
+				}
+				if(queryParams.manualLabel && queryParams.manualLabel !== "undefined") {
+					queryCriteria.push({manualLabel: queryParams.manualLabel });
 				}
 
 				var queryObject = {};
 				if(queryCriteria.length > 0) {
 					queryObject.$and = queryCriteria;
 				}
-				
+
 				var query = VerrichtingModel
 					.find(queryObject);
 
@@ -127,9 +143,22 @@ var VerrichtingDA = function() {
 					query = query.skip(queryParams.skip);
 				}
 
+				var sortParam = { datum: 'desc' };
+				if(queryParams.sortField === "datum_up") {
+					sortParam = { datum: 'asc' };
+				}
+				if(queryParams.sortField === "datum_down") {
+					sortParam = { datum: 'desc' };
+				}
+				if(queryParams.sortField === "bedrag_up") {
+					sortParam = { bedrag: 'asc' };
+				}
+				if(queryParams.sortField === "bedrag_down") {
+					sortParam = { bedrag: 'desc' };
+				}
+
 				query = query
-					//.populate('categorie')
-					.sort({datum: 'desc'});
+					.sort(sortParam);
 
 				query.exec(function(err,results) {
 					if(err) {
@@ -148,6 +177,23 @@ var VerrichtingDA = function() {
 					}
 				});
 			});
+	}
+
+	function findLastVerrichtingForBank(bank) {
+		console.log("DA", bank);
+		return new Promise(function(resolve,reject) {
+			VerrichtingModel
+				.findOne({ bank: bank })
+				.sort({datum: 'desc'})
+				.exec(function(err,result) {
+					if(err) {
+						reject(err);
+					} else {
+						console.log("Verrichting DA RETURNING");
+						resolve(result);
+					}
+				});
+		});
 	}
 
 	function save(verrichting) {
@@ -181,6 +227,9 @@ var VerrichtingDA = function() {
 				verrichtingModel.status = verrichting.status;
 				verrichtingModel.csum = verrichting.csum;
 				verrichtingModel.categorie = verrichting.categorie;
+				verrichtingModel.datumDisplay = verrichting.datumDisplay;
+				verrichtingModel.periodiciteit = verrichting.periodiciteit;
+				verrichtingModel.manualLabel = verrichting.manualLabel;
 
 				verrichtingModel.save(function (err) {
 					if (err) {
@@ -200,7 +249,8 @@ var VerrichtingDA = function() {
 		removeAll: removeAll,
 		removeBulk: removeBulk,
 		remove: remove,
-		search: search
+		search: search,
+		findLastVerrichtingForBank: findLastVerrichtingForBank
 	};
 };
 

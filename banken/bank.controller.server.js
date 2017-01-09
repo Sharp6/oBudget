@@ -41,6 +41,7 @@ var bankCtrl = function() {
 	var renderAll = function(req,res) {
 		return bankRepo.getAll()
 			.then(function(banken) {
+				console.log("BANKCONTROLLER: Rendering all!");
 				return res.render('banken/banken', {
 					banken: banken
 				});

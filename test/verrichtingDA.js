@@ -35,6 +35,8 @@ describe("The verrichtingDA", function() {
 		var solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
 		// we will test the date later
 		delete solution.verrichtingen[0].datum;
+		// we don't want to persist this field
+		delete solution.verrichtingen[0].categoryByBusinessRuleClassifier;
 
 		var data = verrichtingDA.save(solution.verrichtingen[0])
 			.then(verrichtingDA.getAll)
@@ -138,4 +140,12 @@ describe("The verrichtingDA", function() {
 		return expect(data).to.eventually.have.length(1);
 	});
 
+	it("should be able to find the last verrichting for a bank", function() {
+		var solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
+		var data = Promise.all([verrichtingDA.save(solution.verrichtingen[0]), verrichtingDA.save(solution.verrichtingen[1]), verrichtingDA.save(solution.verrichtingen[2])])
+			.then(function() {
+				return verrichtingDA.findLastVerrichtingForBank("argenta");
+			});
+		return expect(data).to.eventually.have.property("datumDisplay").which.equals("05/02/2014");
+	});
 });

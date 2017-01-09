@@ -3,7 +3,7 @@ var verrichtingCtrl = require('./verrichting.controller.server');
 
 // API ==============================================
 // (= get all)
-router.get('/api/verrichtingen', verrichtingCtrl.getAll);
+router.get('/api/verrichtingen', verrichtingCtrl.getMultiple);
 
 // (=get one)
 router.get('/api/verrichting/:id', verrichtingCtrl.get);
@@ -12,11 +12,9 @@ router.get('/api/checkDuplicateVerrichtingen/:csum', verrichtingCtrl.checkDuplic
 router.get('/api/checkAllDuplicateVerrichtingen', verrichtingCtrl.checkAllDuplicates);
 // RENDERERS ========================================
 router.get('/verrichtingen', verrichtingCtrl.renderAll);
-
 router.get('/verrichting/:id', verrichtingCtrl.renderVerrichting);
-
 router.get('/verrichtingHelpers', verrichtingCtrl.renderHelpers);
-
 router.post('/verrichting/:id', verrichtingCtrl.editFormSubmit);
+router.get('/searchVerrichtingen', verrichtingCtrl.renderSearch);
 
 module.exports = router;

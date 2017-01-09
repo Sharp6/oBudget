@@ -23,6 +23,7 @@ describe("Identifies the bank correctly", function() {
 
 	[
 		{ filename: "argenta.csv" },
-		{ filename: "belfius.csv" }
+		{ filename: "belfius.csv" },
+		{ filename: "kbc.csv" }
 	].forEach(expectIdentifiedBank);
 });

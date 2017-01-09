@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var chai = require("chai"), expect = chai.expect;
 chai.use(require('chai-as-promised'));
 chai.use(require('sinon-chai'));
@@ -26,8 +28,7 @@ describe("The categorieDA", function() {
 	}
 
 	beforeEach(function() {
-		//mongoose.connect('mongodb://localhost/obudgetTest');
-		mongoose.connect('mongodb://test:test@ds015636.mlab.com:15636/obudgettest');
+		mongoose.connect(process.env.DB_HOST_TEST);
 		categorieDA.removeAll();
 	});
 

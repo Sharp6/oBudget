@@ -1,0 +1,167 @@
+<html>
+	<head>
+		<title>oBudget</title>
+		<script src="/libraries/require.min.js" data-main="/javascripts/verrichtingenMain.js"></script>
+
+		<!-- TEMPLATES //-->
+		<script type="text/html" id="categorieLijst">
+			<li>
+				<span class="clickable" data-bind="text:naam, click:$parent.selectedCategorie"></span> (<span data-bind="text:aantalVerrichtingen"></span> verrichtingen | Categorietotaal: <span data-bind="text:categorieTotaal"></span> | Subtotaal: <span data-bind="text:subTotaal"></span>)
+				<ul data-bind="template: { name:'categorieLijst', foreach:childCategorieen }"></ul>
+			</li>
+		</script>
+
+		<script type="text/html" id="categorieLijstCompact">
+			<li>
+				<span class="clickable" data-bind="text:naam, click:$parent.selectedCategorie"></span>
+				(<span data-bind="text:subTotaal"></span>&euro;)
+				<ul data-bind="template: { name:'categorieLijstCompact', foreach:childCategorieen }"></ul>
+			</li>
+		</script>
+		<!-- /TEMPLATES //-->
+
+		<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+
+	<body>
+		<div class="container">
+			<h3>Filters</h3>
+			<p>
+				<form class="form-inline">
+				  <div class="form-group">
+				    <select id="maandLijst" class="form-control" data-bind="value:maand">
+							<option value="1">januari</option>
+							<option value="2">februari</option>
+							<option value="3">maart</option>
+							<option value="4">april</option>
+							<option value="5">mei</option>
+							<option value="6">juni</option>
+							<option value="7">juli</option>
+							<option value="8">augustus</option>
+							<option value="9">september</option>
+							<option value="10">oktober</option>
+							<option value="11">novemeber</option>
+							<option value="12">december</option>
+						</select>
+				  </div>
+
+				  <div class="form-group">
+				    <select id="jaarLijst" class="form-control" data-bind="value:jaar">
+							<option value="2015">2015</option>
+							<option value="2016">2016</option>
+						</select>
+				  </div>
+				  
+				  <button type="button" class="btn btn-default" data-bind="click:filterByMaand">Toon per maand</button>	
+				  <button type="button" class="btn btn-default" data-bind="click:filterByJaar">Toon per jaar</button>
+				</form>
+			</p>
+
+			<p>
+				<input type="checkbox" data-bind="checked: periodiciteitFilter" /> Enkel maandelijkse verrichtingen.
+			</p>
+
+			<h3>Sortering</h3>
+			<p>
+				<button type="button" class="btn btn-default" data-bind="click:sortVerrichtingenByBedrag">Sorteer verrichtingen op bedrag</button>
+				<button type="button" class="btn btn-default" data-bind="click:sortCategorieenBySubtotaal">Sorteer categorieën op subtotaal</button>
+				
+			</p>
+
+			<h3>Overzicht</h3>
+
+			<div class="row">
+				<div class="col-md-9">
+					
+					<canvas id="myChart" width="800" height="400" data-bind="chartjs: nonZeroTopLevelCostCategorieen, dataField: 'subTotaalAbs', chartType: 'bar'"></canvas>
+
+					<div data-bind="if:selectedVerrichting()">
+						<div class="well">
+							<ul data-bind="with:selectedVerrichting()">
+								<li><span data-bind="text:datumDisplay"></span></li>
+								<li><span data-bind="text:bedrag"></span></li>
+								<li><span data-bind="text:bank"></span></li>
+								<li><span data-bind="text:info"></span></li>
+							</ul>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="col-md-3" class="categorieDetailDiv">
+					<div class="well well-sm">
+						<table class="categorieenOvericht">
+							<thead>
+								<tr>
+									<th colspan="2">Saldo: <span data-bind="text:saldo"></span>&euro;</th>
+								</tr>
+							</thead>
+
+							<tbody data-bind="foreach:topLevelCategorieen">
+								<tr data-bind="if:subTotaal()!==0">
+									<td class="clickable" data-bind="text:naam, click:$parent.selectedCategorie"></td>
+									<td><span data-bind="text:subTotaal"></span>&euro;</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div data-bind="if:selectedCategorie()" class="categorieenDetails">
+						<h5>Details <span data-bind="text:selectedCategorie().naam"></span></h5>
+
+						<h6>Subcategorieën</h6>
+						<ul data-bind="template: { name:'categorieLijstCompact', foreach:selectedCategorie().childCategorieen }"></ul>
+
+						<h6>Verrichtingen <span data-bind="text:selectedCategorie().naam"></span></h6>
+						<ul data-bind="foreach:selectedCategorie().categorieVerrichtingen">
+							<li class="clickable" data-bind="click:$parent.selectedVerrichting"><span data-bind="text:datumDisplay"></span> <span data-bind="text:bedrag"></span>&euro;</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<script>/*
+			<div class="row">
+				<div class="col-md-12">
+					<canvas id="myChartPie" width="800" height="400" data-bind="chartjs: nonZeroTopLevelCostCategorieen, categorieField: 'subTotaalAbs', chartType: 'pie'"></canvas>
+				</div>
+			</div>
+			*/</script>
+	
+			<h3>Verrichtingen</h3>
+			<p>Er zijn <span data-bind="text:numberOfVerrichtingen"></span> verrichtingen voor deze filter-criteria.</p>
+			
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Datum</th>
+						<th>Bedrag</th>
+						<th>Bank</th>
+						<th>Categorie</th>
+					</tr>
+				</thead>
+
+				<tbody data-bind="foreach:verrichtingen">
+					<tr>
+						<td>
+							<span data-bind="text:datumDisplay"></span>
+						</td>	
+						<td>
+							<span data-bind="text:bedrag"></span>
+						</td>
+						<td>
+							<span data-bind="text:bank"></span>
+						</td>
+						<td>
+							<span data-bind="text:categorie"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h3>Categorieën</h3>
+			<ul data-bind="template: { name:'categorieLijst', foreach:topLevelCategorieen }"></ul>
+		</div>
+	</body>
+</html>

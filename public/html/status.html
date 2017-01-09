@@ -1,0 +1,37 @@
+<html>
+	<head>
+		<title>oBudget</title>
+		<script src="/libraries/require.min.js" data-main="/javascripts/statusMain.js"></script>
+
+		<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+
+	<body>
+		<div class="container">
+			<p>Huidig totaal: &euro;<span data-bind="text: totaal"></span></p>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Bank</th>
+						<th>Saldo</th>
+						<th>Datum laatste verrichting</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach:banken">
+					<tr>
+						<td>
+							<span data-bind="text:naam"></span>
+						</td>
+						<td>
+							&euro;<span data-bind="text:huidigBerekendSaldo"></span>
+						</td>
+						<td>
+							<span data-bind="text:datumLaatsteVerrichting"></span>
+						</td>
+					</tr>
+				</tbody>
+
+		</div>
+	</body>
+</html>

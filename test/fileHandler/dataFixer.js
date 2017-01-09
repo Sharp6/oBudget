@@ -25,6 +25,7 @@ describe("fixes the syntax", function() {
 
 	[
 		{ filename: 'argenta.csv' },
-		{ filename: 'belfius.csv' }
+		{ filename: 'belfius.csv' },
+		{ filename: 'kbc.csv' }
 	].forEach(testSyntaxFixing);
 });

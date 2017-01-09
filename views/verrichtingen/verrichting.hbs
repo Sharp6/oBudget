@@ -53,6 +53,10 @@
 		<th>Rekening tegenpartij</th>
 		<td>{{verrichting.rekeningTegenpartij}}</td>
 	</tr>
+	<tr>
+		<th>Periodiciteit</th>
+		<td>{{verrichting.periodiciteit}}</td>
+	</tr>
 
 </table>
 
@@ -64,7 +68,17 @@
 	Categorie bepaald door business rule: {{verrichting.categoryByBusinessRuleClassifier}}
 	<form action="/verrichting/{{verrichting.verrichtingId}}" method="POST">
 		<label for="categorie">Categorie:</label>
-		<input type="text" name="categorie" id="categorie" class="form-control" placeholder="categorie" value="{{verrichting.categoryByBusinessRuleClassifier}}" />
+		<input type="text" name="categorie" id="categorie" class="form-control" placeholder="categorie" value="{{verrichting.categorie}}" />
+
+		<label for="periodiciteit">Periodiciteit:</label>
+		<input type="text" name="periodiciteit" id="periodiciteit" class="form-control" placeholder="periodiciteit" value="{{verrichting.periodiciteit}}" />
+
+		<label for="manualLabel">Label:</label>
+		<input type="text" name="manualLabel" id="manualLabel" class="form-control" placeholder="manualLabel" value="{{verrichting.manualLabel}}" />
+
+		<label for="datumDisplay">Datum:</label>
+		<input type="text" name="datumDisplay" id="datumDisplay" class="form-control" placeholder="Datum" value="{{verrichting.datumDisplay}}" />
+
 		<input type="submit" class="btn btn-default" value="submit" /> 
 	</form>
 </p>

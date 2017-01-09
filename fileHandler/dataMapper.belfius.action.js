@@ -10,7 +10,7 @@ function mapBelfiusRecord(data) {
 	for (var dataAttribute in data) { augmentedData[dataAttribute] = data[dataAttribute]; }
 
 	augmentedData.bank = 'belfius';
-	augmentedData.datum = data['datumVerrichting'].replace(/\//g, '-')
+	augmentedData.datum = data['datumVerrichting'].replace(/\//g, '-');
 	augmentedData.info = " - " + data.rekeningTegenpartij + " - " + data.naamTegenpartij + " - " + data.mededeling;
 	return augmentedData;
 }

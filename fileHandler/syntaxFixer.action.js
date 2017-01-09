@@ -8,6 +8,7 @@ function fixSyntax(fileToParse) {
 			var bedragString = fixedData.bedrag.toString();
 			bedragString = bedragString.replace('.', '');
 			bedragString = bedragString.replace(',', '.');
+			bedragString = bedragString.replace(' ', '');
 			fixedData.bedrag = parseFloat(bedragString);
 
 			return fixedData;

@@ -1,0 +1,45 @@
+naam;parentCategorieNaam;kleur
+Dagelijkse kosten;;#83B4FE
+Wonen;;#163565
+Vervoer;;#D1BDB5
+Auto;Vervoer;
+Inkomsten;;#00FF00
+Brandstof;Auto;
+Multimedia;;#7DC5CB
+Utilities;;#FE9283
+Water;Utilities;
+Gas en elektriciteit;Utilities;
+Telecom;Utilities;
+Hobby;;#FE8398
+Sport;Hobby;
+Ontspanning;;#651C28
+Restaurant;Ontspanning;
+Uitgaan;Ontspanning;
+Reizen;;#CCD1B5
+Medische kosten;;#C47DCB
+Inkomsten Philip;Inkomsten;
+Inkomsten Machteld;Inkomsten;
+Inkomsten Olivia;Inkomsten;
+Cadeaus;;#FEF883
+Belasting;;#556DFE
+Pensioensparen;Sparen;
+Afbetaling lening;Wonen;
+Bankkosten;Varia;
+Kledij;Persoonlijk;
+Transfers tussen rekeningen;;#091665
+Creche;Gezin;
+Verzorging;Persoonlijk;
+Giften;Varia;
+Dienstencheques;Wonen;
+Muziek;Hobby;
+Electronica;Hobby;
+Juwelen;Cadeaus;
+Kapper;Verzorging;
+Bloemen;Wonen;
+Gezin;;#D1AA8F
+Sparen;;#C9D7D4
+Persoonlijk;;#95FFCB
+Varia;;#95FFFA
+Werkonkosten;Varia;
+Dienstencheques;Wonen;
+Verzekeringen;#256B68

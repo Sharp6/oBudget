@@ -12,9 +12,12 @@ var verrichtingRepo = function() {
 
 	function _instantiateVerrichting(data) {
 		var verrichting = new Verrichting(data);
-		verrichting.categoryByBusinessRuleClassifier = classifiers.businessRuleClassifier.classify(verrichting);
-		_verrichtingen.push(verrichting);
-		return verrichting;
+		return classifiers.businessRuleClassifier.classify(verrichting)
+			.then(function(category) {
+				verrichting.categoryByBusinessRuleClassifier = category;
+				_verrichtingen.push(verrichting);
+				return verrichting;
+			});
 	}
 
 	function create(data) {
@@ -25,6 +28,8 @@ var verrichtingRepo = function() {
 		augmentedData.status = 'imported';
 		augmentedData.csum = checksum(data.bedrag + data.datum + data.mededeling);
 		augmentedData.datum = moment.tz(data.datum, "DD-MM-YYYY", "Europe/Brussels");
+		augmentedData.datumDisplay = augmentedData.datum.format("DD/MM/YYYY");
+		augmentedData.periodiciteit = "maandelijks";
 		// add timestamp?
 
 		var newVerrichting = new Verrichting(augmentedData);
@@ -53,7 +58,9 @@ var verrichtingRepo = function() {
 				// retrieve from db
 				verrichtingDA.get(verrichtingId)
 					.then(function(verrichtingData) {
-						var newVerrichting = _instantiateVerrichting(verrichtingData);
+						return _instantiateVerrichting(verrichtingData);
+					})
+					.then(function(newVerrichting) {
 						resolve(newVerrichting);
 					})
 					.catch(function(err) {
@@ -64,17 +71,14 @@ var verrichtingRepo = function() {
 	}
 
 	function getVerrichtingByData(verrichtingData) {
-		return new Promise(function(resolve,reject) {
-			var verrichting = _verrichtingen.find(function(verrichting) {
-				return verrichting && verrichting.verrichtingId === verrichtingData.verrichtingId;
-			});
-			if(verrichting) {
-				resolve(verrichting);
-			} else {
-				var newVerrichting = _instantiateVerrichting(verrichtingData);
-				resolve(newVerrichting);
-			}
+		var verrichting = _verrichtingen.find(function(verrichting) {
+			return verrichting && verrichting.verrichtingId === verrichtingData.verrichtingId;
 		});
+		if(verrichting) {
+			return Promise.resolve(verrichting);
+		} else {
+			return _instantiateVerrichting(verrichtingData);
+		}
 	}
 
 	function getVerrichtingenByData(verrichtingenData) {
@@ -140,6 +144,24 @@ var verrichtingRepo = function() {
 	}
 
 	// FINDERS
+	function findLastVerrichtingForBank(bankName) {
+		return verrichtingDA.findLastVerrichtingForBank(bankName)
+			.then(function(response) {
+				return getVerrichtingByData(response);
+			});
+	}
+
+	function findVerrichtingenForBank(bankName) {
+		console.log("VERRICHTINGREPO: retrieving verrichtingen for", bankName);
+		return verrichtingDA.search({
+			bank: bankName
+		})
+		.then(function(response) {
+			console.log("VERRICHTINGREPO: returning verrichtingen by data for", bankName);
+			return getVerrichtingenByData(response.results);
+		});
+	}
+
 	function findVerrichtingenForBankBefore(bankName, endDate) {
 		return verrichtingDA.search({
 			bank: bankName,
@@ -150,13 +172,37 @@ var verrichtingRepo = function() {
 		});
 	}
 
+	function findVerrichtingenWithCategorie(categorie) {
+		return verrichtingDA.search({
+			categorie: categorie
+		})
+		.then(function(response) {
+			return getVerrichtingenByData(response.results);
+		});
+	}
+
+	function search(query) {
+		return verrichtingDA.search(query)
+			.then(function(response) {
+				return getVerrichtingenByData(response.results)
+					.then(function(verrichtingen) {
+						response.verrichtingen = verrichtingen;
+						return response;
+					});
+			});
+	}
+
 	return {
 		create: create,
 		getAll: getAll,
 		getVerrichtingById: getVerrichtingById,
 		save: save,
 		handleDuplicates: handleDuplicates,
-		findVerrichtingenForBankBefore: findVerrichtingenForBankBefore
+		findLastVerrichtingForBank: findLastVerrichtingForBank,
+		findVerrichtingenForBankBefore: findVerrichtingenForBankBefore,
+		findVerrichtingenWithCategorie: findVerrichtingenWithCategorie,
+		findVerrichtingenForBank: findVerrichtingenForBank,
+		search: search
 	};
 };
 

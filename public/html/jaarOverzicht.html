@@ -1,0 +1,180 @@
+<html>
+	<head>
+		<title>oBudget</title>
+		<script src="/libraries/require.min.js" data-main="/javascripts/jaarOverzichtMain.js"></script>
+
+		<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+
+	<body>
+		<div class="container">
+			<div data-bind="with:jaarGroep">
+				<h1>Jaaroverzicht <span data-bind="text:label"></span></h1>
+				<div class="row">
+					
+					<div class="col-md-4">
+						<h2>Saldi</h2>
+						<table class="geldTabel">
+								<tr>
+									<th>Maandelijks sparen</tH>
+									<td>&euro;<span data-bind="text:$parent.maandSpaarSaldo()"></span></td>
+									
+								</tr>
+									<th>Jaaruitgaven</th>
+									<td>&euro;<span data-bind="text:$parent.jaarVerrichtingenGroep().saldo()"></span></td>
+								<tr>
+
+								</tr>
+									<th>Levenslange investeringen</th>
+									<td>&euro;<span data-bind="text:$parent.levensVerrichtingenGroep().saldo()"></span></td>
+								<tr>
+
+								<tr>
+									<th>Saldo</th>
+									<td>&euro;<span data-bind="text:saldo()"></span></td>
+								</tr>
+							
+						</table>
+					</div>
+
+					<div class="col-md-8">
+						<h2>Levenslangse investeringen</h2>
+						<table class="geldTabel" data-bind="foreach:$root.levensVerrichtingen">
+							<tr>
+								<td>
+									<div class="date">
+										<p><!--ko text: dag--><!--/ko-->
+											<span data-bind="text:maand3letters"></span>
+										</p>
+									</div>
+								</td>
+								<td><img data-bind="attr: { src: categorieIcon }" width="15px" height="15px"></td>
+								<td>&euro;<span data-bind="text:bedrag"></span></td>
+								<td><span data-bind="text:manualLabel"></span></td>
+							</tr>
+						</table>
+						<h2>Jaaruitgaven</h2>
+						<table class="geldTabel" data-bind="foreach:$root.jaarVerrichtingen">
+							<tr>
+								<td>
+									<div class="date">
+										<p><!--ko text: dag--><!--/ko-->
+											<span data-bind="text:maand3letters"></span>
+										</p>
+									</div>
+								</td>
+								<td><img data-bind="attr: { src: categorieIcon }" width="15px" height="15px"></td>
+								<td>&euro;<span data-bind="text:bedrag"></span></td>
+								<td><span data-bind="text:manualLabel"></span></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<h2>Maanden</h2>
+			<div class="row">
+				<div class="col-md-5">
+					<table class="geldTabel">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Saldo</th>
+								<th>In</th>
+								<th>Uit</th>
+						</thead>
+						<tbody data-bind="foreach:maanden">
+							<tr>
+								<th><span data-bind="text:label, click:$parent.selectedMaand" class="clickable"></span></th>
+								<td>&euro;<span  data-bind="text:saldo()"></span></td>
+								<td>&euro;<span  data-bind="text:totaleInkomsten"></span></td>
+								<td>&euro;<span  data-bind="text:totaleKosten"></span></td>
+						</tbody>
+					</table>
+					<p>
+						Maandelijks te dragen hoeveelheid van jaarverrichtingen: <span data-bind="text:maandelijksAandeelInJaarVerrichtingen"></span>.
+					</p>
+				</div>
+				<div class="col-md-7">
+					<canvas id="maandenChart" width="500" height="300" data-bind="chartjs: maanden, dataField: 'saldo', chartType: 'bar', labelField: 'label', dataLabel: 'Maandsaldi', colorField: 'saldoKleur'"></canvas>
+				</div>
+			</div>
+
+			<hr/>
+
+			<div data-bind="with:selectedMaand()">
+				<h1>Details <span data-bind="text:label"></span></h1>
+				<div class="row">
+					<div class="col-md-4">
+						<table class="geldTabel">
+							<thead>
+								<tr>
+									<th>Categorie</th><th>Totaal</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach:nonZeroTopLevelCategorieen">
+								<tr>
+									<td data-bind="text:naam, click:$root.selectedCategorie" class="clickable"></td>
+									<td data-bind="text:subTotaal()"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-8">
+						<canvas id="maandDetailChart" width="600" height="400" data-bind="chartjs: nonZeroTopLevelCostCategorieen, dataField: 'subTotaalAbs', chartType: 'bar', labelField: 'naam', dataLabel: 'Categorieën', colorField: 'kleur'"></canvas>
+					</div>
+				</div>
+			</div>
+				
+			<div data-bind="with:selectedCategorie()">
+				<h2>Details <span data-bind="text:naam"></span> (<span data-bind="text:$root.selectedMaand().label"></span>)</h2>
+				<div class="row">
+					<div class="col-md-3">
+						<table class="geldTabel" data-bind="foreach:categorieVerrichtingenIncludingChildCategorieen">
+							<tr>
+								<td>
+									<div class="date">
+										<p><!--ko text: dag--><!--/ko-->
+											<span data-bind="text:maand3letters"></span>
+										</p>
+									</div>
+								</td>
+								<td>&euro;<span data-bind="text:bedrag, click:$root.selectedVerrichting" class="clickable"></span></td>
+								<td><span data-bind="text:manualLabel"></span></td>
+							</tr>
+						</table>
+					</div>
+					<div class="col-md-9">
+						<canvas id="categorieOverzichtChart" width="600" height="200" data-bind="chartjs: $root.catOverzichtForSelectedCategorie().saldi, dataField: 'saldo', chartType: 'line', labelField: 'maand', dataLabel: 'Overzicht'"></canvas>
+						
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<div data-bind="if:selectedVerrichting()">
+						<div class="well">
+							<ul data-bind="with:selectedVerrichting()">
+								<li><span data-bind="text:bank"></span></li>
+								<li><span data-bind="text:info"></span></li>
+								<li><span data-bind="text:categorie"></span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<script>/*
+			<ul data-bind="with:">
+							<li data-bind="text:catNaam"></li>
+							<ul data-bind="foreach:saldi">
+								<li><span data-bind="text:maand"></span> <span data-bind="text:saldo"></span></li>
+							</ul>
+						</ul>
+			*/</script>
+			
+		</div>
+	</body>
+</html>

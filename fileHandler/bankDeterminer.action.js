@@ -8,6 +8,8 @@ function determineBank(fileToParse) {
 			bank = "argenta";
 		} else if(fileToParse.filename.toLowerCase().indexOf("kbc") !== -1) {
 			bank = "kbc";
+		} else if(fileToParse.filename.toLowerCase().indexOf("visa") !== -1) {
+			bank = "visa";
 		}
 
 		if(bank) {

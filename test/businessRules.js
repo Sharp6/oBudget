@@ -13,27 +13,9 @@ function loadSolution(filename) {
 var solution = loadSolution('./testDataFilesSolutions/' + "argenta.csv" + ".solution.json");
 
 describe("The business rule classifier", function() {
-	var businessRules = businessRuleClassifier.loadBusinessRules();
-
-	it("should load business rules", function() {
-		return expect(businessRules).to.not.be.empty;
-	});
-
-
-	describe("properties", function() {
-		it("should have the indicatorString property", function() {
-			return expect(businessRules[0]).to.have.property("indicatorString");
-		});
-
-		it("should have the categoryName property", function() {
-			return expect(businessRules[0]).to.have.property("categoryName");
-		});
-	});
-
 	describe("should classify", function() {
 		it("a Dagelijkse kosten verrichting", function() {
-			return expect(businessRuleClassifier.classify(solution.verrichtingen[0])).to.equal('Dagelijkse kosten');
+			return expect(businessRuleClassifier.classify(solution.verrichtingen[0])).to.eventually.equal('Dagelijkse kosten');
 		});
 	});
-	
 });

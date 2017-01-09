@@ -4,7 +4,7 @@ var moment = require('moment');
 var determineBank = require('./bankDeterminer.action');
 var assignDataHelpers = require('./dataHelpersAssigner.action');
 var readFile = require('./fileReader.action');
-var parseData = require('./dataParser.action');
+var parseData = require('./dataParser.csv.action');
 var fixSyntax = require('./syntaxFixer.action');
 var createVerrichtingen = require('./verrichtingenCreator.action');
 var saveVerrichtingen = require('./verrichtingenSaver.action');
@@ -20,7 +20,14 @@ function executeHandling(filename) {
 		.then(function(fileToParse) {
 			return fileToParse.dataPreparer(fileToParse);
 		})
-		.then(parseData)
+		.then(function(fileToParse) {
+			console.log(fileToParse);
+			return fileToParse;
+		})
+		//.then(parseData)
+		.then(function(fileToParse) {
+			return fileToParse.dataParser(fileToParse);
+		})
 		.then(function(fileToParse) {
 			return fileToParse.dataMapper(fileToParse);
 		})

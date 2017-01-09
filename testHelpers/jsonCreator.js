@@ -3,12 +3,12 @@ var fs = require('fs');
 var determineBank = require("../fileHandler/bankDeterminer.action");
 var assignDataHelpers = require("../fileHandler/dataHelpersAssigner.action");
 var readFile = require("../fileHandler/fileReader.action");
-var parseData = require('../fileHandler/dataParser.action');
+var parseData = require('../fileHandler/dataParser.csv.action');
 var fixSyntax = require('../fileHandler/syntaxFixer.action');
 var createVerrichtingen = require('../fileHandler/verrichtingenCreator.action');
 
 var fileToParse = {
-	filename: "../testDataFiles/argenta.csv"
+	filename: "../testDataFiles/kbc.csv"
 };
 
 determineBank(fileToParse)

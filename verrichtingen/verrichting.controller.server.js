@@ -1,4 +1,5 @@
 var verrichtingRepo = require('./verrichting.repository.server');
+var moment = require('moment');
 
 var verrichtingCtrl = function() {
 	// API ===============================================================
@@ -10,6 +11,26 @@ var verrichtingCtrl = function() {
 			.catch(function(err) {
 				res.status(500).send(err);
 			});
+	}
+
+	function search(req,res) {
+		req.query.beginDatum = moment(req.query.beginDatum || "18/04/1983", "DD/MM/YYYY");
+		req.query.eindDatum = moment(req.query.eindDatum || "31/12/2019", "DD/MM/YYYY");
+		return verrichtingRepo.search(req.query)
+			.then(function(response) {
+				res.send(response);
+			})
+			.catch(function(err) {
+				res.status(500).send(err);
+			});
+	}
+
+	function getMultiple(req,res) {
+		if(req.query) {
+			return search(req,res);
+		} else {
+			return getAll(req,res);
+		}
 	}
 
 	/*
@@ -66,9 +87,38 @@ var verrichtingCtrl = function() {
 	var renderAll = function(req,res) {
 		return verrichtingRepo.getAll()
 			.then(function(verrichtingen) {
-				console.log("VERRICHTINGENCTRL: verrichtingen", verrichtingen);
 				return res.render('verrichtingen/verrichtingen', {
-					verrichtingen: verrichtingen
+					verrichtingen: verrichtingen,
+					sorters: [
+						{ sorterValue: 'datum_up', sorterLabel: 'Datum oplopend' },
+						{ sorterValue: 'datum_down', sorterLabel: 'Datum aflopend' },
+						{ sorterValue: 'bedrag_up', sorterLabel: 'Bedrag oplopend' },
+						{ sorterValue: 'bedrag_down', sorterLabel: 'Bedrag aflopend' }
+					]
+				});
+			})
+			.catch(function(err) {
+				res.status(500).send(err);
+			});
+	};
+
+	var renderSearch = function(req,res) {
+		req.query.beginDatum = moment(req.query.beginDatum || "18/04/1983", "DD/MM/YYYY");
+		req.query.eindDatum = moment(req.query.eindDatum || "31/12/2019", "DD/MM/YYYY");
+		req.query.beginDatumDisplay = req.query.beginDatum.format("DD/MM/YYYY");
+		req.query.eindDatumDisplay = req.query.eindDatum.format("DD/MM/YYYY");
+
+		return verrichtingRepo.search(req.query)
+			.then(function(response) {
+				return res.render('verrichtingen/verrichtingen', {
+					verrichtingen: response.verrichtingen,
+					searchParams: req.query,
+					sorters: [
+						{ sorterValue: 'datum_up', sorterLabel: 'Datum oplopend' },
+						{ sorterValue: 'datum_down', sorterLabel: 'Datum aflopend' },
+						{ sorterValue: 'bedrag_up', sorterLabel: 'Bedrag oplopend' },
+						{ sorterValue: 'bedrag_down', sorterLabel: 'Bedrag aflopend' }
+					]
 				});
 			})
 			.catch(function(err) {
@@ -96,6 +146,11 @@ var verrichtingCtrl = function() {
 		return verrichtingRepo.getVerrichtingById(req.params.id)
 			.then(function(verrichting) {
 				verrichting.categorie = req.body.categorie;
+				verrichting.periodiciteit = req.body.periodiciteit;
+				verrichting.manualLabel = req.body.manualLabel;
+				// This should not happen in the controller... REFACTOR
+				verrichting.datum = moment.tz(req.body.datumDisplay, "DD-MM-YYYY", "Europe/Brussels");
+				verrichting.datumDisplay = verrichting.datum.format("DD/MM/YYYY");
 				return verrichting;
 			})
 			.then(verrichtingRepo.save)
@@ -113,11 +168,13 @@ var verrichtingCtrl = function() {
 		getAll: getAll,
 		get: get,
 		renderAll: renderAll,
+		renderSearch: renderSearch,
 		renderVerrichting: renderVerrichting,
 		checkDuplicates: checkDuplicates,
 		checkAllDuplicates: checkAllDuplicates,
 		renderHelpers: renderHelpers,
-		editFormSubmit: editFormSubmit
+		editFormSubmit: editFormSubmit,
+		getMultiple: getMultiple
 	};
 };
 

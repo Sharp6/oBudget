@@ -23,6 +23,7 @@ describe("loads the correct bank data helpers", function() {
 
 	[
 		{ bank: 'belfius' },
-		{ bank: 'argenta' }
+		{ bank: 'argenta' },
+		{ bank: 'kbc' }
 	].forEach(testCorrectDataPreparer);
 });

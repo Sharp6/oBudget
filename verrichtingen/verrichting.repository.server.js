@@ -192,6 +192,10 @@ var verrichtingRepo = function() {
 			});
 	}
 
+	function getTimeExtremes() {
+		return verrichtingDA.getTimeExtremes();
+	}
+
 	return {
 		create: create,
 		getAll: getAll,
@@ -202,7 +206,8 @@ var verrichtingRepo = function() {
 		findVerrichtingenForBankBefore: findVerrichtingenForBankBefore,
 		findVerrichtingenWithCategorie: findVerrichtingenWithCategorie,
 		findVerrichtingenForBank: findVerrichtingenForBank,
-		search: search
+		search: search,
+		getTimeExtremes: getTimeExtremes
 	};
 };
 

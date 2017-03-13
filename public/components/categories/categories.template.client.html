@@ -1,0 +1,16 @@
+<h3>Categories</h3>
+
+<ul data-bind="foreach:topLevelCategories">
+  <li data-bind="click:toggleChildren">
+    <span data-bind="text:naam"></span>
+    <span class="label label-default" data-bind="text:childCategories().length"></span>
+    <!-- ko if: showChildCategories -->
+    <ul data-bind="foreach:childCategories">
+      <li>
+        <span data-bind="text:naam"></span>
+        <span class="label label-default" data-bind="text:childCategories().length"></span>
+      </li>
+    </ul>
+    <!-- /ko -->
+  </li>
+</ul>

@@ -10,6 +10,8 @@ router.get('/api/verrichting/:id', verrichtingCtrl.get);
 
 router.get('/api/checkDuplicateVerrichtingen/:csum', verrichtingCtrl.checkDuplicates);
 router.get('/api/checkAllDuplicateVerrichtingen', verrichtingCtrl.checkAllDuplicates);
+
+router.get('/api/actions/getTimeExtremes', verrichtingCtrl.getTimeExtremes)
 // RENDERERS ========================================
 router.get('/verrichtingen', verrichtingCtrl.renderAll);
 router.get('/verrichting/:id', verrichtingCtrl.renderVerrichting);

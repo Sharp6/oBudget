@@ -34,7 +34,7 @@ var verrichtingCtrl = function() {
 	}
 
 	/*
-	This is probably not needed for verrichting 
+	This is probably not needed for verrichting
 	var create = function(req,res) {
 		categorieRepo.create(req.body)
 			.then(function(categorie){
@@ -148,6 +148,9 @@ var verrichtingCtrl = function() {
 				verrichting.categorie = req.body.categorie;
 				verrichting.periodiciteit = req.body.periodiciteit;
 				verrichting.manualLabel = req.body.manualLabel;
+				verrichting.recurringYearly = req.body.recurringYearly;
+				verrichting.recurringMonthly = req.body.recurringMonthly;
+
 				// This should not happen in the controller... REFACTOR
 				verrichting.datum = moment.tz(req.body.datumDisplay, "DD-MM-YYYY", "Europe/Brussels");
 				verrichting.datumDisplay = verrichting.datum.format("DD/MM/YYYY");
@@ -164,6 +167,19 @@ var verrichtingCtrl = function() {
 			});
 	};
 
+	var getTimeExtremes = function(req,res) {
+		console.log("CONTROLLOR");
+		verrichtingRepo.getTimeExtremes()
+			.then(function(result) {
+				res.status(200).json(result);
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.status(500).send(err);
+
+			});
+	}
+
 	return {
 		getAll: getAll,
 		get: get,
@@ -174,7 +190,8 @@ var verrichtingCtrl = function() {
 		checkAllDuplicates: checkAllDuplicates,
 		renderHelpers: renderHelpers,
 		editFormSubmit: editFormSubmit,
-		getMultiple: getMultiple
+		getMultiple: getMultiple,
+		getTimeExtremes: getTimeExtremes
 	};
 };
 

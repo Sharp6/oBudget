@@ -16,7 +16,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="col-md-4">
 			<div class="form-group">
@@ -24,7 +24,7 @@
 				<input type="text" name="beginDatum" id="beginDatum" class="form-control" placeholder="DD-MM-YYYY" value="{{searchParams.beginDatumDisplay}}" />
 			</div>
 		</div>
-			
+
 		<div class="col-md-4">
 			<div class="form-group">
 				<label for="periodiciteit">Periodiciteit</label>
@@ -80,6 +80,8 @@
 	<th>Datum</th>
 	<th>Categorie</th>
 	<th>Details</th>
+	<th>Recurring Yearly</th>
+	<th>Recurring Monthly</th>
 </tr>
 </thead>
 
@@ -100,6 +102,16 @@
 			<a href="/verrichting/{{verrichtingId}}">
 				link
 			</a>
+		</td>
+		<td>
+			{{#if recurringYearly}}
+				<img src="/images/recurring.svg" width="15px" height="15px">
+			{{/if}}
+		</td>
+		<td>
+			{{#if recurringMonthly}}
+				<img src="/images/recurring.svg" width="15px" height="15px">
+			{{/if}}
 		</td>
 	</tr>
 {{/verrichtingen}}

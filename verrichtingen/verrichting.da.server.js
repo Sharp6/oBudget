@@ -19,7 +19,8 @@ var VerrichtingDA = function() {
 		categorie: String,
 		datumDisplay: String,
 		periodiciteit: String,
-		manualLabel: String
+		manualLabel: String,
+		recurringYearly: Boolean
 	});
 
 	var VerrichtingModel = mongoose.model('Verrichting', verrichtingSchema);
@@ -116,7 +117,11 @@ var VerrichtingDA = function() {
 					queryCriteria.push({status: {$eq:queryParams.status}});
 				}
 				if(queryParams.categorie && queryParams.categorie !== "undefined") {
-					queryCriteria.push({categorie: queryParams.categorie});
+					if(queryParams.categorie === "empty") {
+							queryCriteria.push({categorie: ""});
+					} else {
+							queryCriteria.push({categorie: queryParams.categorie});
+					}
 				}
 				if(queryParams.businessRuleClassification && queryParams.businessRuleClassification !== "false") {
 					queryCriteria.push({categorieGuessedByBusinessRule: {$exists:true} });
@@ -230,6 +235,9 @@ var VerrichtingDA = function() {
 				verrichtingModel.datumDisplay = verrichting.datumDisplay;
 				verrichtingModel.periodiciteit = verrichting.periodiciteit;
 				verrichtingModel.manualLabel = verrichting.manualLabel;
+				verrichtingModel.recurringYearly = verrichting.recurringYearly;
+				verrichtingModel.recurringMonthly = verrichting.recurringMonthly;
+
 
 				verrichtingModel.save(function (err) {
 					if (err) {
@@ -242,6 +250,42 @@ var VerrichtingDA = function() {
 		});
 	}
 
+	function getTimeExtremes() {
+		return Promise.all([getMinTime(),getMaxTime()]);
+	}
+
+	function getMinTime() {
+		return new Promise(function(resolve,reject) {
+			VerrichtingModel
+				.aggregate([{
+					$group: { _id: "minDate", minDate: { $min: "$datum" } }
+				}])
+				.exec(function(err,doc) {
+					console.log(err,doc);
+					if(err) {
+						return reject(err);
+					}
+					resolve(doc[0]);
+				});
+		});
+	}
+
+	function getMaxTime() {
+		return new Promise(function(resolve,reject) {
+			VerrichtingModel
+				.aggregate([{
+					$group: { _id: "maxDate", maxDate: { $max: "$datum" } }
+				}])
+				.exec(function(err,doc) {
+					console.log(err,doc);
+					if(err) {
+						return reject(err);
+					}
+					resolve(doc[0]);
+				});
+		});
+	}
+
 	return {
 		save: save,
 		get: get,
@@ -250,7 +294,8 @@ var VerrichtingDA = function() {
 		removeBulk: removeBulk,
 		remove: remove,
 		search: search,
-		findLastVerrichtingForBank: findLastVerrichtingForBank
+		findLastVerrichtingForBank: findLastVerrichtingForBank,
+		getTimeExtremes: getTimeExtremes
 	};
 };
 

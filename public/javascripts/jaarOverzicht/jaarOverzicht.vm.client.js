@@ -7,7 +7,7 @@ define(['knockout', 'moment',
 	function(ko,moment,VerrichtingGroep,Verrichting,verrichtingDA,Categorie,categorieDA) {
 	var JaarOverzichtVM = function() {
 		var self = this;
-		
+
 		self.maandMap = {
 			1: "januari",
 			2: "februari",
@@ -23,6 +23,7 @@ define(['knockout', 'moment',
 			12: "december"
 		};
 
+		self.jaar = ko.observable(2016);
 		self.verrichtingen = ko.observableArray([]);
 		self.numberOfVerrichtingen = ko.observable();
 		self.maandVerrichtingen = ko.observableArray([]);
@@ -63,7 +64,7 @@ define(['knockout', 'moment',
 			self.maanden(maanden);
 		});
 		self.jaarGroep = ko.computed(function() {
-			return new VerrichtingGroep("2016", self.verrichtingen);
+			return new VerrichtingGroep(self.jaar(), self.verrichtingen);
 		});
 		self.jaarVerrichtingenGroep = ko.computed(function() {
 			return new VerrichtingGroep("Jaar-verrichtingen", self.jaarVerrichtingen);
@@ -101,25 +102,6 @@ define(['knockout', 'moment',
 			});
 		};
 
-		/*
-		self.saldo = ko.computed(function() {
-			return self.verrichtingen().reduce(function(saldo, verrichting) {
-				return Math.round(saldo + verrichting.bedrag);
-			}, 0);
-		});
-
-
-		
-	*/
-		self.jaar = ko.observable(2016);
-/*		self.maandBegin = ko.computed(function() {
-			return moment([self.jaar(), self.maand()]).add(-1,"month").format("DD/MM/YYYY");
-		});
-		self.maandEinde = ko.computed(function() {
-			return moment([self.jaar(), self.maand()]).add(-1,"month").endOf('month').format("DD/MM/YYYY");
-		});
-*/
-
 		self.selectedMaand = ko.observable();
 		self.selectedCategorie = ko.observable();
 		self.selectedVerrichting = ko.observable();
@@ -137,7 +119,7 @@ define(['knockout', 'moment',
 			};
 			self.filterVerrichtingen(query);
 		};
-		
+
 		self.loadVerrichtingen = function() {
 			verrichtingDA.load()
 				.then(function(response) {
@@ -168,9 +150,10 @@ define(['knockout', 'moment',
 				beginDatum: moment([self.jaar(), 0]).format("DD/MM/YYYY"),
 				eindDatum: moment([self.jaar(), 11]).endOf('month').format("DD/MM/YYYY")
 			};
+			console.log("INIT QUERY", query);
 			self.filterVerrichtingen(query);
 		};
 	};
-	
+
 	return JaarOverzichtVM;
 });

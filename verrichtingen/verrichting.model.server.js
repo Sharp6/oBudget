@@ -16,6 +16,8 @@ var Verrichting = function(data) {
 	this.categorie = data.categorie || '';
 	this.periodiciteit = data.periodiciteit || '';
 	this.manualLabel = data.manualLabel || '';
+	this.recurringYearly = data.recurringYearly || false;
+	this.recurringMonthly = data.recurringMonthly || false;
 
 	this.categoryByBusinessRuleClassifier = data.categoryByBusinessRuleClassifier || '';
 

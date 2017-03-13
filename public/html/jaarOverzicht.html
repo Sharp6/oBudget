@@ -11,15 +11,17 @@
 		<div class="container">
 			<div data-bind="with:jaarGroep">
 				<h1>Jaaroverzicht <span data-bind="text:label"></span></h1>
+				<input type="text" data-bind="value:$parent.jaar" />
+				<button class="btn btn-primary" data-bind="click:$root.init">Update jaar</button>
 				<div class="row">
-					
+
 					<div class="col-md-4">
 						<h2>Saldi</h2>
 						<table class="geldTabel">
 								<tr>
 									<th>Maandelijks sparen</tH>
 									<td>&euro;<span data-bind="text:$parent.maandSpaarSaldo()"></span></td>
-									
+
 								</tr>
 									<th>Jaaruitgaven</th>
 									<td>&euro;<span data-bind="text:$parent.jaarVerrichtingenGroep().saldo()"></span></td>
@@ -34,7 +36,7 @@
 									<th>Saldo</th>
 									<td>&euro;<span data-bind="text:saldo()"></span></td>
 								</tr>
-							
+
 						</table>
 					</div>
 
@@ -126,7 +128,7 @@
 					</div>
 				</div>
 			</div>
-				
+
 			<div data-bind="with:selectedCategorie()">
 				<h2>Details <span data-bind="text:naam"></span> (<span data-bind="text:$root.selectedMaand().label"></span>)</h2>
 				<div class="row">
@@ -147,7 +149,7 @@
 					</div>
 					<div class="col-md-9">
 						<canvas id="categorieOverzichtChart" width="600" height="200" data-bind="chartjs: $root.catOverzichtForSelectedCategorie().saldi, dataField: 'saldo', chartType: 'line', labelField: 'maand', dataLabel: 'Overzicht'"></canvas>
-						
+
 					</div>
 				</div>
 			</div>
@@ -174,7 +176,7 @@
 							</ul>
 						</ul>
 			*/</script>
-			
+
 		</div>
 	</body>
 </html>

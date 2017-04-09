@@ -8,12 +8,14 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload');
 
+console.log(process.env.NODE_ENV);
 var mongoose = require('mongoose');
 if(process.env.NODE_ENV === "test") {
   mongoose.connect(process.env.DB_HOST_TEST);
-}
-if(process.env.NODE_ENV === "dev") {
+} else if(process.env.NODE_ENV === "dev") {
   mongoose.connect(process.env.DB_HOST_DEV);
+} else {
+    console.log("Please set your node env");
 }
 
 var app = express();

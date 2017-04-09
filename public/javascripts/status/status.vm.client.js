@@ -1,12 +1,14 @@
 "use strict";
 
 define(['knockout', 'moment',
-	'banken/bank.model.client', 'banken/bank.da.client'
+	'banken/bank.model.client', 'banken/bank.da.client',
+	'saldi/saldo.model.client', 'saldi/saldo.da.client'
 	],
-	function(ko,moment,Bank,bankDA) {
+	function(ko,moment,Bank,bankDA,Saldo,saldoDA) {
 	var StatusVM = function() {
 		var self = this;
 
+		self.saldi = ko.observableArray([]);
 		self.banken = ko.observableArray([]);
 		self.totaal = ko.computed(function() {
 			return Math.round(self.banken().reduce(function(subtotaal, bank) {
@@ -14,6 +16,22 @@ define(['knockout', 'moment',
 			}, 0));
 		});
 		
+		self.loadSaldi = function() {
+			saldoDA.load()
+				.then(function(response) {
+					var mappedSaldi = response.map(function(saldo) {
+						var mappedSaldo = new Saldo(saldo);
+
+						saldoDA.verify(mappedSaldo)
+							.then(outcome => {
+								mappedSaldo.verified(outcome.checkResult);
+							});
+
+						return mappedSaldo;
+					});
+					self.saldi(mappedSaldi);
+				});
+		};
 		self.loadBanken = function() {
 			bankDA.load()
 				.then(function(response) {
@@ -21,12 +39,12 @@ define(['knockout', 'moment',
 						return new Bank(bank);
 					});
 					self.banken(mappedBanken);
-					self.numberOfVerrichtingen(response.count);
-			});
+				});
 		};
 
 		self.init = function() {
 			self.loadBanken();
+			self.loadSaldi();
 		};
 	};
 	

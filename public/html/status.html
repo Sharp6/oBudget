@@ -31,7 +31,35 @@
 						</td>
 					</tr>
 				</tbody>
+			</table>
 
+			<h3>Saldi</h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Bank</th>
+						<th>Bedrag</th>
+						<th>Laatste verrichting</th>
+						<th>Verified</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach:saldi">
+					<tr>
+						<td>
+							<span data-bind="text:bankNaam"></span>
+						</td>
+						<td>
+							&euro;<span data-bind="text:bedrag"></span>
+						</td>
+						<td>
+							<span data-bind="text:laatsteVerrichtingId"></span>
+						</td>
+						<td>
+							<span data-bind="text:verified"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</body>
 </html>

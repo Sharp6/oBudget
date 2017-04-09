@@ -15,7 +15,6 @@ var saldoCheckerCtrl = function() {
 				.then(function(laatsteVerrichting) {
 					return verrichtingRepo.findVerrichtingenForBankBefore(laatsteVerrichting.bank, laatsteVerrichting.datum);
 				}, function(err) {
-					console.log("HERE", err);
 					reject(err);
 				})
 				.then(function(verrichtingen) {
@@ -66,10 +65,12 @@ var saldoCheckerCtrl = function() {
 			saldoId: saldoId
 		};
 
-		return _getSaldo(saldoCheck)
+		var result = _getSaldo(saldoCheck)
 			.then(_getVerrichtingen)
 			.then(_getBeginSaldo)
 			.then(_doCheck);
+
+		return result;
 	}
 	
 	function checkSaldo(req,res) {

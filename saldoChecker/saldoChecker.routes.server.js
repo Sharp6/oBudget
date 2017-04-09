@@ -3,7 +3,7 @@ var saldoCheckerCtrl = require('./saldoChecker.controller.server');
 
 // API ==============================================
 // (= get all)
-router.get('/api/saldoChecker/:saldoId', saldoCheckerCtrl.checkSaldoFlow);
+router.get('/api/saldoChecker/:saldoId', saldoCheckerCtrl.checkSaldo);
 
 // RENDERERS ========================================
 router.get('/saldoChecker', saldoCheckerCtrl.renderSaldoCheckerMain);

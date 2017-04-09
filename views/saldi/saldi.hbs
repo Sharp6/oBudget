@@ -2,26 +2,28 @@
 
 <table class="table">
 <thead>
-<tr>
-	<th>ID</th>
-	<th>Details</th>
-	<th>Edit</th>
-</tr>
+	<tr>
+		<th>ID</th>
+		<th>Datum</th>
+		<th>Bank</th>
+		<th>Bedrag</th>
+		<th>Details</th>
+		<th>Edit</th>
+	</tr>
 </thead>
 
 <tbody>
 {{#saldi}}
 	<tr>
 		<td>{{saldoId}}</td>
+		<td>{{laatsteVerrichting.datumDisplay}}</td>
+		<td>{{bankNaam}}</td>
+		<td>{{bedrag}}</td>
 		<td>
-			<a href="/saldo/{{saldoId}}">
-				link
-			</a>
+			<a href="/saldo/{{saldoId}}">link</a>
 		</td>
 		<td>
-			<a href="/editSaldo/{{saldoId}}">
-				link
-			</a>
+			<a href="/editSaldo/{{saldoId}}">link</a>
 		</td>
 	</tr>
 {{/saldi}}

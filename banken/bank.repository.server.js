@@ -12,18 +12,14 @@ var bankRepo = function() {
 		return Promise.resolve()
 			.then(function() {
 				var bank = new Bank(data);
-				console.log("BANKREPO", "_instantiateBank", bank.naam);
 				return verrichtingRepo.findLastVerrichtingForBank(bank.naam)
 					.then(function(laatsteVerrichting) {
-						console.log("BANKREPO", "Got laatsteVerrichting", bank.naam);
 						bank.datumLaatsteVerrichting = laatsteVerrichting.datum;
 					})
 					.then(function() {
-						console.log("BANKREPO: Getting all verrichtingen for", bank.naam);
 						return verrichtingRepo.findVerrichtingenForBank(bank.naam);
 					})
 					.then(function(verrichtingen) {
-						console.log("BANKREPO: Calculating lopendSaldo for", bank.naam);
 						bank.lopendSaldo = verrichtingen.reduce(function(subtotaal, verrichting) {
 							return subtotaal + verrichting.bedrag;
 						}, 0);
@@ -32,12 +28,10 @@ var bankRepo = function() {
 					})
 					.then(function(){
 						_banken.push(bank);
-						console.log("BANKREPO: returning", bank.naam);
 						return bank;
 					});
 			})
 			.then(function(bank) {
-				console.log("BANKREPO: returning to getAll", bank.naam);
 				return bank;
 			});
 	}
@@ -57,7 +51,6 @@ var bankRepo = function() {
 				var promises = bankenData.map(function(bankData) {
 					return getBankByData(bankData);
 				});
-				console.log("BANKREPO PROMISES", promises);
 				return Promise.all(promises);
 			});
 	}
@@ -67,10 +60,8 @@ var bankRepo = function() {
 			return bank.naam === bankData.naam;
 		});
 		if(bank) {
-			console.log("BANKREP: found bank in cache", bank.naam);
 			return Promise.resolve(bank);
 		} else {
-			console.log("BANKREP: instantiating bank", bankData.naam);
 			return _instantiateBank(bankData);
 		}
 	}
@@ -85,7 +76,9 @@ var bankRepo = function() {
 			} else {
 				// retrieve from db
 				bankDA.get(naam)
-					.then(function(bankData) {
+					.then(getBankByData)
+					.then(bank => {
+						resolve(bank);
 					})
 					.catch(function(err) {
 						reject(err);

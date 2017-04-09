@@ -2,7 +2,7 @@ var saldoRepo = require('./saldo.repository.server');
 
 var saldoCtrl = function() {
 
-	// API 
+	// API
 	var getAll = function(req,res) {
 		return saldoRepo.getAll()
 			.then(function(saldi) {
@@ -55,7 +55,8 @@ var saldoCtrl = function() {
 	};
 
 	var renderUpdateForm = function(req,res) {
-		return saldoRepo.getSaldoById(req.params.id)
+		return saldoRepo
+			.getSaldoById(req.params.id)
 			.then(function(saldo) {
 				return res.render('saldi/editSaldoForm', {
 					saldo: saldo
@@ -67,7 +68,8 @@ var saldoCtrl = function() {
 	};
 
 	var renderSaldo = function(req,res) {
-		return saldoRepo.getSaldoById(req.params.id)
+		return saldoRepo
+			.getSaldoById(req.params.id)
 			.then(function(saldo) {
 				res.render('saldi/saldo', {
 					saldo: saldo

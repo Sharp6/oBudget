@@ -1,5 +1,8 @@
 var Saldo = require('./saldo.model.server');
 var saldoDA = require('./saldo.da.server');
+
+var verrichtingRepo = require('./../verrichtingen/verrichting.repository.server');
+
 var uuid = require('uuid');
 
 var saldoRepo = function() {
@@ -13,8 +16,12 @@ var saldoRepo = function() {
 				augmentedData.saldoId = uuid.v4();
 
 				var newSaldo = new Saldo(augmentedData);
-				_saldi.push(newSaldo);
 				return newSaldo;
+			})
+			.then(augmentWithVerrichting)
+			.then(saldo => {
+				_saldi.push(saldo);
+				return saldo;
 			});
 	}
 
@@ -37,8 +44,11 @@ var saldoRepo = function() {
 				resolve(saldo);
 			} else {
 				var newSaldo = new Saldo(saldoData);
-				_saldi.push(newSaldo);
-				resolve(newSaldo);
+				augmentWithVerrichting(newSaldo)
+					.then(saldo => {
+						_saldi.push(saldo);
+						resolve(saldo);
+					});
 			}
 		});
 	}
@@ -55,14 +65,30 @@ var saldoRepo = function() {
 				saldoDA.get(saldoId)
 					.then(function(saldoData) {
 						var newSaldo = new Saldo(saldoData);
-						_saldi.push(newSaldo);
-						resolve(newSaldo);
+						return newSaldo;
+					})
+					.then(augmentWithVerrichting)
+					.then(saldo => {
+						_saldi.push(saldo);
+						resolve(saldo);
 					})
 					.catch(function(err) {
 						reject(err);
 					});
 			}
 		});
+	}
+
+	function augmentWithVerrichting(saldo) {
+		
+		return verrichtingRepo
+			.getVerrichtingById(saldo.laatsteVerrichtingId)
+			.then(verrichting => {
+				saldo.laatsteVerrichting = verrichting;
+				return saldo;
+			});
+		
+		//return Promise.resolve(saldo);
 	}
 
 	function save(saldo) {
